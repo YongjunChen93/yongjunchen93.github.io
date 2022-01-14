@@ -71,25 +71,22 @@
 
     <h2>Publications</h2>
     (* denotes equal contribution)
-      <h3>Preprints</h3>
 
+      <h3>Conference</h3>
       <table class="imgtable"><tr><td>
         <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
       </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Contrastive self-supervised sequential recommendation with robust augmentation</strong><br></font>
-        <font><I>Zhiwei Liu*, Yongjun Chen*, Jia Li, Philip S. Yu, Julian McAuley, Caiming Xiong</I><br></font> 
-        <font>Preprint, 2021</font>
+        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Intent Contrastive Learning for Sequential Recommendation</strong><br></font>
+        <font><I>Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong<br></I></font> 
+        <font>The Web Conference <strong>(WWW)</strong>, 2022</font>
         <div class="links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/2108.06479.pdf">Paper</a>]
-          [<a href="https://github.com/YChen1993/CoSeRec">Code</a>]
+          [<a href="">Paper</a>]
+          [<a href="">Code</a>]
         <div class="abstract", style="line-height:20px">
-          Sequential Recommendation describes a set of techniques to model
-          dynamic user behavior in order to predict future interactions in sequential user data. At their core, such approaches model transition probabilities betweenitems in a sequence, whether through Markov chains, recurrent networks, or more recently, Transformers. However both old and new issues remain, including data-sparsity and noisy data; such issues can impair performance, especially in complex, parameter-hungry models. In this paper, we investigate the application of contrastive Self-Supervised Learning (SSL) to sequential recommendation, as a way to alleviate some of these issues. Contrastive SSL constructs augmentations from unlabelled instances, where agreements among positive pairs are maximized. It is challenging to devise a contrastive SSL framework for sequential recommendation, due to its discrete nature, correlations among items, and skewness of length distributions. To this end, we propose a novel framework, Contrastive Self-supervised Learning for Sequential Recommendation (CoSeRec). We introduce two informative augmentation operators leveraging item correlations to create high quality views for contrastive learning. Experimental results on three real-world datasets demonstrate the effectiveness of the proposed method on improving model performance, and the robustness against sparse and noisy data. Our implementation is available: https://github.com/YChen1993/CoSeRec.</div>
+          Users’ interactions with items are driven by various intents (e.g.,preparing for holiday gifts, shopping for fishing equipment, etc.).However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor forSequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and theSR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.</div>
       </td></tr></table>
 
-
-      <h3>Conference</h3>
       <table class="imgtable"><tr><td>
         <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
       </td>
@@ -136,7 +133,7 @@
       </td>
         <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Learning Graph Pooling and Hybrid Convolutional Operations for Text Representations</strong><br></font>
         <font><I>Hongyang Gao, Yongjun Chen</font>, and Shuiwang Ji<br></I></font> 
-        <font>The Web Conference, <strong>(WWW)</strong>, 2019</font>
+        <font>The Web Conference <strong>(WWW)</strong>, 2019</font>
         <div class="links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
           [<a href="https://arxiv.org/pdf/1901.06965.pdf">Paper</a>]
@@ -213,6 +210,37 @@
             our methods.</div>
           </td></tr>
       </table>
+     <h3>Preprints</h3>
+
+      <table class="imgtable"><tr><td>
+        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
+      </td>
+        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Contrastive Self-supervised Sequential Recommendation with Robust Augmentation</strong><br></font>
+        <font><I>Zhiwei Liu*, Yongjun Chen*, Jia Li, Philip S. Yu, Julian McAuley, Caiming Xiong</I><br></font> 
+        <font>Preprint, 2021</font>
+        <div class="links">
+          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
+          [<a href="https://arxiv.org/pdf/2108.06479.pdf">Paper</a>]
+          [<a href="https://github.com/YChen1993/CoSeRec">Code</a>]
+        <div class="abstract", style="line-height:20px">
+          Sequential Recommendation describes a set of techniques to model
+          dynamic user behavior in order to predict future interactions in sequential user data. At their core, such approaches model transition probabilities betweenitems in a sequence, whether through Markov chains, recurrent networks, or more recently, Transformers. However both old and new issues remain, including data-sparsity and noisy data; such issues can impair performance, especially in complex, parameter-hungry models. In this paper, we investigate the application of contrastive Self-Supervised Learning (SSL) to sequential recommendation, as a way to alleviate some of these issues. Contrastive SSL constructs augmentations from unlabelled instances, where agreements among positive pairs are maximized. It is challenging to devise a contrastive SSL framework for sequential recommendation, due to its discrete nature, correlations among items, and skewness of length distributions. To this end, we propose a novel framework, Contrastive Self-supervised Learning for Sequential Recommendation (CoSeRec). We introduce two informative augmentation operators leveraging item correlations to create high quality views for contrastive learning. Experimental results on three real-world datasets demonstrate the effectiveness of the proposed method on improving model performance, and the robustness against sparse and noisy data. Our implementation is available: https://github.com/YChen1993/CoSeRec.</div>
+      </td></tr></table>
+
+
+    <h2>Honors & Awards</h2>
+        <ul>
+        <li><p>Pennyworth@Salesforce is ranked #4 of 
+        <a href="https://algo.browser.qq.com/#en">CIKM 2021 AnalytiCup on Automated Hyperparameter Optimization</a> (lead the competition), Oct. 2021.</p>
+        </li>
+        <li><p>Excellent Graduate, Huazhong University Science & Technology, June. 2016. </p>
+        </li>
+        <li><p>Honorable mention prize of The International Interdisciplinary Contest in Modeling (ICM),
+        Feb. 2015.</p>
+        </li>
+        <li><p>
+        Undergraduate Science and Technology Innovation Scholarship, Huazhong University Science & Technology, Feb. 2014, 2015.</p>
+        </ul>
 
     <h2>Teaching Experiences</h2>
       <h3>Teaching Assistant</h3>
