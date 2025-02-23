@@ -57,12 +57,12 @@
     <table class="imgtable", style="color:black;"><tr><td>
       <img style="" src="images/selfie2.jpeg" alt="photography" width="160px" height="160px"/>&nbsp;</td>
       <td align="left">
-        <p><font><strong>About Me:</font></strong> I am currently a Senior Machine Learning Engineer at <a href="https://www.apple.com/">Apple</a> for Intelligent Input Experience. Previously, I was a Senior Research Engineer at <a href="https://www.salesforceairesearch.com/">Salesforce Research</a>, where I worked on both research and applications of Deep Learning, Recommender Systems, and AutoML. I obtained my M.S. degree from Computer Science department at Washington State University, advised by <a href="http://people.tamu.edu/~sji/">Prof. Shuiwang Ji</a>, and my bachelor’s degree from Mathematics and Statistics department at Huazhong University of Science and Technology (HUST) in China. <br/>
+        <p><font><strong>About Me:</font></strong> I am a research engineer at Apple currently working on <a href="https://www.apple.com/apple-intelligence/">Apple Intelligence</a> with large language models, e.g., Message Smart Reply and Writing Tool.
+
+        <p>I was a research engineer at <a href="https://www.salesforceairesearch.com/">Salesforce AI Research</a>, where I worked on both research and applications of Sequential Recommender Systems, and AutoML. I obtained my M.S. degree from Computer Science department at Washington State University, advised by <a href="http://people.tamu.edu/~sji/">Prof. Shuiwang Ji</a>, and my bachelor’s degree from Mathematics and Statistics department at Huazhong University of Science and Technology (HUST) in China. <br/>
 
       <br/><font><strong>Contact:</font></strong> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
-      <!-- Phone: 509-339-9024<br/> -->
-      <!-- Address: 124 University Ave, Palo Alto, CA, 94301<br/> -->
-      
+
       <br/><a href="https://www.linkedin.com/in/YongjunChen/"><br/>[Linkedin]</a>
       <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en">[Google Scholar]</a>
       <a href="https://github.com/YongjunChen93">[Github]</a>
@@ -71,10 +71,25 @@
     </table>
 
 
-    <h2>Publications</h2>
+    <h2>Selected Publications</h2>
     (* denotes equal contribution)
 
       <h3>Conference</h3>
+      
+      <table class="imgtable"><tr><td>
+        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
+      </td>
+        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Intent Contrastive Learning for Sequential Recommendation</strong><br></font>
+        <font><I>Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong<br></I></font> 
+        <font>The Web Conference <strong>(WWW)</strong>, 2022</font>
+        <div class="links">
+          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
+          [<a href="https://arxiv.org/pdf/2202.02519.pdf">Paper</a>]
+          [<a href="https://github.com/salesforce/ICLRec">Code</a>]
+        <div class="abstract", style="line-height:20px">
+          Users’ interactions with items are driven by various intents (e.g., preparing for holiday gifts, shopping for fishing equipment, etc.). However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor for Sequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and the SR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.</div>
+      </td></tr></table>
+
       <table class="imgtable"><tr><td>
         <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
       </td>
@@ -104,19 +119,46 @@
         </div>
       </td></tr></table>
 
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Intent Contrastive Learning for Sequential Recommendation</strong><br></font>
-        <font><I>Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong<br></I></font> 
-        <font>The Web Conference <strong>(WWW)</strong>, 2022</font>
-        <div class="links">
-          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/2202.02519.pdf">Paper</a>]
-          [<a href="https://github.com/salesforce/ICLRec">Code</a>]
-        <div class="abstract", style="line-height:20px">
-          Users’ interactions with items are driven by various intents (e.g., preparing for holiday gifts, shopping for fishing equipment, etc.). However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor for Sequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and the SR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.</div>
-      </td></tr></table>
+        <table class="imgtable"><tr><td>
+<!--           <img src="images/voxeldeconvolution.png" alt="photography" width="300px" height="150px" />&nbsp; -->
+          </td>
+          <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Voxel Deconvolutional Networks for 3D Brain Image Labeling</strong><br></font>
+          <font><I>Yongjun Chen</font>, Hongyang Gao, Lei Cai, Min Shi, Dinggang Shen and Shuiwang Ji<br></I></font> 
+          <font>The 24th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining <strong>(KDD)</strong>, 2018</font>
+          <div class="links">[<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
+            [<a href="http://delivery.acm.org/10.1145/3220000/3219974/p1226-chen.pdf?ip=69.166.46.137&id=3219974&acc=OPENTOC&key=B63ACEF81C6334F5%2E3B1D11B7501B70D8%2E4D4702B0C3E38B35%2E054E54E275136550&__acm__=1535680435_e69225cf8c7ed216e2e0a11ee85f4452">Paper</a>]
+            [<a href="https://github.com/divelab/VoxelDCN">Code</a>]
+            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_slides_vdn.pdf">Slides</a>]
+            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_poster_vdn.pdf">Poster</a>]</div>
+          <div class="abstract", style="line-height:20px">Deep learning methods have shown great success in pixel-wise
+            prediction tasks. One of the most popular methods employs an
+            encoder-decoder network in which deconvolutional layers are used
+            for up-sampling feature maps. However, a key limitation of the
+            deconvolutional layer is that it suers from the checkerboard artifact
+            problem, which harms the prediction accuracy. is is caused
+            by the independency among adjacent pixels on the output feature
+            maps. Previous work only solved the checkerboard artifact issue of
+            deconvolutional layers in the 2D space. Since the number of intermediate
+            feature maps needed to generate a deconvolutional layer
+            grows exponentially with dimensionality, it is more challenging to
+            solve this issue in higher dimensions. In this work, we propose the
+            voxel deconvolutional layer (VoxelDCL) to solve the checkerboard
+            artifact problem of deconvolutional layers in 3D space. We also
+            provide an ecient approach to implement VoxelDCL. To demonstrate
+            the eectiveness of VoxelDCL, we build four variations of
+            voxel deconvolutional networks (VoxelDCN) based on the U-Net
+            architecture with VoxelDCL. We apply our networks to address
+            volumetric brain images labeling tasks using the ADNI and LONI
+            LPBA40 datasets. e experimental results show that the proposed
+            iVoxelDCNa achieves improved performance in all experiments.
+            It reaches 83.34% in terms of dice ratio on the ADNI dataset and
+            79.12% on the LONI LPBA40 dataset, which increases 1.39% and
+            2.21% respectively compared with the baseline. In addition, all the
+            variations of VoxelDCN we proposed outperform the baseline methods
+            on the above datasets, which demonstrates the eectiveness of
+            our methods.</div>
+          </td></tr>
+      </table>
 
       <table class="imgtable"><tr><td>
         <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
@@ -130,33 +172,6 @@
           [<a href="https://github.com/YChen1993/AnDa">Code</a>]
         <div class="abstract", style="line-height:20px">
           Traditional approaches to next-item and next basket recommendation typically extract users’ interests based on their past interactions and associated static contextual information (e.g. a user id or item category). However, extracted interests can be inaccurate and become obsolete. Dynamic attributes, such as user income changes, item price changes (etc.), change over time. Such dynamics can intrinsically reflect the evolution of users’ interests. We argue that modeling such dynamic attributes can boost recommendation performance. However, properly integrating them into user interest models is challenging since attribute dynamics can be diverse such as time-interval aware, periodic patterns (etc.), and they represent users’ behaviors from different perspectives, which can happen asynchronously with interactions. Besides dynamic attributes, items in each basket contain complex interdependencies which might be beneficial but nontrivial to effectively capture. To address these challenges, we propose a novel Attentive network to model Dynamic attributes (named AnDa). AnDa separately encodes dynamic attributes and basket item sequences. We design a periodic aware encoder to allow the model to capture various temporal patterns from dynamic attributes. To effectively learn useful item relationships, intra-basket attention module is proposed. Experimental results on three real-world datasets demonstrate that our method consistently outperforms the state-of-the-art.</div>
-      </td></tr></table>
-
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Interpreting Deep Models for Text Analysis via Optimization and Regularization Methods</strong><br></font>
-        <font><I>Hao Yuan, Yongjun Chen</font>, Xia Hu and Shuiwang Ji<br></I></font> 
-        <font>The 33rd AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2019</font>
-        <div class="links">
-          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://ojs.aaai.org//index.php/AAAI/article/view/4517">Paper</a>]
-        <div class="abstract", style="line-height:20px">
-          Interpreting deep neural networks is of great importance to
-          understand and verify deep models for natural language processing
-          (NLP) tasks. However, most existing approaches only
-          focus on improving the performance of models but ignore
-          their interpretability. In this work, we propose an approach to
-          investigate the meaning of hidden neurons of convolutional
-          neural network (CNN) models.We first employ saliency map
-          and optimization techniques to approximate the detected information
-          of hidden neurons from input sentences. Then we
-          develop regularization terms and explore words in vocabulary
-          to interpret such detected information. Experimental results
-          demonstrate that our approach can identify meaningful and
-          reasonable interpretations for hidden spatial locations. Additionally,
-          we show that our approach can describe the decision
-          procedure of deep NLP models.</div>
       </td></tr></table>
 
       <table class="imgtable"><tr><td>
@@ -201,46 +216,34 @@
           </td></tr>
       </table>
 
-        <table class="imgtable"><tr><td>
-<!--           <img src="images/voxeldeconvolution.png" alt="photography" width="300px" height="150px" />&nbsp; -->
-          </td>
-          <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Voxel Deconvolutional Networks for 3D Brain Image Labeling</strong><br></font>
-          <font><I>Yongjun Chen</font>, Hongyang Gao, Lei Cai, Min Shi, Dinggang Shen and Shuiwang Ji<br></I></font> 
-          <font>The 24th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining <strong>(KDD)</strong>, 2018</font>
-          <div class="links">[<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-            [<a href="http://delivery.acm.org/10.1145/3220000/3219974/p1226-chen.pdf?ip=69.166.46.137&id=3219974&acc=OPENTOC&key=B63ACEF81C6334F5%2E3B1D11B7501B70D8%2E4D4702B0C3E38B35%2E054E54E275136550&__acm__=1535680435_e69225cf8c7ed216e2e0a11ee85f4452">Paper</a>]
-            [<a href="https://github.com/divelab/VoxelDCN">Code</a>]
-            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_slides_vdn.pdf">Slides</a>]
-            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_poster_vdn.pdf">Poster</a>]</div>
-          <div class="abstract", style="line-height:20px">Deep learning methods have shown great success in pixel-wise
-            prediction tasks. One of the most popular methods employs an
-            encoder-decoder network in which deconvolutional layers are used
-            for up-sampling feature maps. However, a key limitation of the
-            deconvolutional layer is that it suers from the checkerboard artifact
-            problem, which harms the prediction accuracy. is is caused
-            by the independency among adjacent pixels on the output feature
-            maps. Previous work only solved the checkerboard artifact issue of
-            deconvolutional layers in the 2D space. Since the number of intermediate
-            feature maps needed to generate a deconvolutional layer
-            grows exponentially with dimensionality, it is more challenging to
-            solve this issue in higher dimensions. In this work, we propose the
-            voxel deconvolutional layer (VoxelDCL) to solve the checkerboard
-            artifact problem of deconvolutional layers in 3D space. We also
-            provide an ecient approach to implement VoxelDCL. To demonstrate
-            the eectiveness of VoxelDCL, we build four variations of
-            voxel deconvolutional networks (VoxelDCN) based on the U-Net
-            architecture with VoxelDCL. We apply our networks to address
-            volumetric brain images labeling tasks using the ADNI and LONI
-            LPBA40 datasets. e experimental results show that the proposed
-            iVoxelDCNa achieves improved performance in all experiments.
-            It reaches 83.34% in terms of dice ratio on the ADNI dataset and
-            79.12% on the LONI LPBA40 dataset, which increases 1.39% and
-            2.21% respectively compared with the baseline. In addition, all the
-            variations of VoxelDCN we proposed outperform the baseline methods
-            on the above datasets, which demonstrates the eectiveness of
-            our methods.</div>
-          </td></tr>
-      </table>
+      <table class="imgtable"><tr><td>
+        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
+      </td>
+        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Interpreting Deep Models for Text Analysis via Optimization and Regularization Methods</strong><br></font>
+        <font><I>Hao Yuan, Yongjun Chen</font>, Xia Hu and Shuiwang Ji<br></I></font> 
+        <font>The 33rd AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2019</font>
+        <div class="links">
+          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
+          [<a href="https://ojs.aaai.org//index.php/AAAI/article/view/4517">Paper</a>]
+        <div class="abstract", style="line-height:20px">
+          Interpreting deep neural networks is of great importance to
+          understand and verify deep models for natural language processing
+          (NLP) tasks. However, most existing approaches only
+          focus on improving the performance of models but ignore
+          their interpretability. In this work, we propose an approach to
+          investigate the meaning of hidden neurons of convolutional
+          neural network (CNN) models.We first employ saliency map
+          and optimization techniques to approximate the detected information
+          of hidden neurons from input sentences. Then we
+          develop regularization terms and explore words in vocabulary
+          to interpret such detected information. Experimental results
+          demonstrate that our approach can identify meaningful and
+          reasonable interpretations for hidden spatial locations. Additionally,
+          we show that our approach can describe the decision
+          procedure of deep NLP models.</div>
+      </td></tr></table>
+
+
      <h3>Preprints</h3>
 
       <table class="imgtable"><tr><td>
@@ -258,21 +261,19 @@
           dynamic user behavior in order to predict future interactions in sequential user data. At their core, such approaches model transition probabilities between items in a sequence, whether through Markov chains, recurrent networks, or more recently, Transformers. However both old and new issues remain, including data-sparsity and noisy data; such issues can impair performance, especially in complex, parameter-hungry models. In this paper, we investigate the application of contrastive Self-Supervised Learning (SSL) to sequential recommendation, as a way to alleviate some of these issues. Contrastive SSL constructs augmentations from unlabelled instances, where agreements among positive pairs are maximized. It is challenging to devise a contrastive SSL framework for sequential recommendation, due to its discrete nature, correlations among items, and skewness of length distributions. To this end, we propose a novel framework, Contrastive Self-supervised Learning for Sequential Recommendation (CoSeRec). We introduce two informative augmentation operators leveraging item correlations to create high quality views for contrastive learning. Experimental results on three real-world datasets demonstrate the effectiveness of the proposed method on improving model performance, and the robustness against sparse and noisy data. Our implementation is available: https://github.com/YChen1993/CoSeRec.</div>
       </td></tr></table>
 
+  </body>
+    <h2>Education</h2>
+      <ul>
+        <li><p>M.S., Computer Science, <a href="https://wsu.edu/">Washington State University</a>, August 2016 - Dec. 2018</p>
+          <ul>
+            <li>Thesis: <a href="https://rex.libraries.wsu.edu/esploro/outputs/graduate/Advanced-Deep-Learning-Methods-for-Image/99900525175901842">Advanced Deep Learning Methods for Image Pixel-Wise Prediction</a></li>
+          </ul>
+        </li>
+        <li><p>B.S., Statistics, <a href="http://english.hust.edu.cn/">Huazhong University of Science and Technology</a>, September 2012 - June 2016</p>
+        </li>
+      </ul>
 
-    <h2>Honors & Awards</h2>
-        <ul>
-        <li><p>Pennyworth@Salesforce is ranked #4 of 
-        <a href="https://algo.browser.qq.com/#en">CIKM 2021 AnalytiCup on Automated Hyperparameter Optimization</a> (led the competition), Oct. 2021.</p>
-        </li>
-        <li><p>Excellent Graduate, HUST, June. 2016. </p>
-        </li>
-        <li><p>Honorable mention prize of The International Interdisciplinary Contest in Modeling (ICM), Feb. 2015.</p>
-        </li>
-        <li><p>
-        Undergraduate Science and Technology Innovation Scholarship, HUST, Feb. 2014, 2015.</p>
-        </ul>
-
-    <h2>Teaching Experiences</h2>
+    <h2>Professional Services</h2>
       <h3>Teaching Assistant</h3>
         <font color="#676868">Washington State University, WA, USA</font> 
         <ul>
@@ -287,17 +288,30 @@
         <li><p>Spring 2017: CptS 223 Advanced Data Structures C/C++</p>
         </li>
         </ul>
+      <h3>Conference Reviewers</h3>
+        <font color="#676868">DM/ML/AI Conferences</font> 
+        <ul>
+        <li><p>2025: COLING</p>
+        </li>
+        <li><p>2024: TKDE, ACL, EMNLP</p></li>
+        <li><p>2023: ACL</p></li>
+        <li><p>2022: UAI, EMNLP, AAAI, ACML, TOIS</p></li>
+        <li><p>2021: NAACL</p></li>
+        <li><p>2020 and before: KDD, CIKM, NIPS, ICDM, TKDE</p></li>
+        </ul>
 
-  </body>
-    <h2>Education</h2>
-      <ul>
-        <li><p>M.S., Computer Science, <a href="https://wsu.edu/">Washington State University</a>, August 2016 - Dec. 2018</p>
-          <ul>
-            <li>Thesis: <a href="https://rex.libraries.wsu.edu/esploro/outputs/graduate/Advanced-Deep-Learning-Methods-for-Image/99900525175901842">Advanced Deep Learning Methods for Image Pixel-Wise Prediction</a></li>
-          </ul>
+
+    <h2>Honors & Awards</h2>
+        <ul>
+        <li><p>Pennyworth@Salesforce is ranked #4 of 
+        <a href="https://algo.browser.qq.com/#en">CIKM 2021 AnalytiCup on Automated Hyperparameter Optimization</a> (led the competition), Oct. 2021.</p>
         </li>
-        <li><p>B.S., Statistics, <a href="http://english.hust.edu.cn/">Huazhong University of Science and Technology</a>, September 2012 - June 2016</p>
+        <li><p>Excellent Graduate, HUST, June. 2016. </p>
         </li>
-      </ul>
+        <li><p>Honorable mention prize of The International Interdisciplinary Contest in Modeling (ICM), Feb. 2015.</p>
+        </li>
+        <li><p>
+        Undergraduate Science and Technology Innovation Scholarship, HUST, Feb. 2014, 2015.</p>
+        </ul>
 </html>
 
