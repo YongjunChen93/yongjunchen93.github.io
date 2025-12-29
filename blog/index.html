@@ -1,0 +1,32 @@
+---
+layout: default
+title: "Blog"
+---
+
+{% assign posts_list = paginator.posts | default: site.posts %}
+
+{% for post in posts_list %}
+  <div class="mb-10">
+    <a href="{{ post.url | relative_url }}" class="text-2xl font-semibold hover:underline">
+      {{ post.title_en | default: post.title }}
+    </a>
+    <p class="text-gray-500 text-sm">{{ post.date | date: "%b %d, %Y" }}</p>
+    <p class="mt-2 text-gray-700 dark:text-gray-300">{{ post.excerpt }}</p>
+  </div>
+{% endfor %}
+
+{% if paginator and paginator.total_pages and paginator.total_pages > 1 %}
+<nav class="mt-12 flex items-center justify-between text-sm text-gray-500">
+  <div>
+    {% if paginator.previous_page %}
+      <a class="hover:underline" href="{{ paginator.previous_page_path | relative_url }}">← Newer</a>
+    {% endif %}
+  </div>
+  <div>Page {{ paginator.page }} of {{ paginator.total_pages }}</div>
+  <div>
+    {% if paginator.next_page %}
+      <a class="hover:underline" href="{{ paginator.next_page_path | relative_url }}">Older →</a>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}

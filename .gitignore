@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Python cache
+*.pyc
+__pycache__/
+
+# Jekyll build output (blog sub-site)
+blog/_site/
+
+# Jekyll cache
+blog/.jekyll-cache/
+blog/.sass-cache/
+blog/.jekyll-metadata
+
+# Ruby / Bundler
+blog/vendor/
+blog/.bundle/
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log

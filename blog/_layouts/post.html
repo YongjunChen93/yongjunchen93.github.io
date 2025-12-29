@@ -1,0 +1,85 @@
+---
+layout: default
+---
+
+<!-- 右上角：导航 + 语言切换（不占标题空间） -->
+<div class="fixed top-6 right-6 z-50 flex items-center gap-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur px-3 py-2 rounded-lg">
+  <a
+    href="{{ '/' | relative_url }}"
+    class="text-sm text-gray-500 hover:underline"
+    aria-label="Back to home"
+  >
+    ← Home
+  </a>
+
+  <button
+    id="lang-toggle"
+    class="text-xs text-gray-700 border border-gray-300 rounded px-2 py-1
+           hover:bg-gray-100 transition
+           dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
+    style="display: none;"
+    type="button"
+  >
+    中文
+  </button>
+</div>
+
+<article class="mt-20 mb-12">
+  <header class="mb-4">
+    <!-- 双语标题 -->
+    <h1 class="text-3xl font-semibold">
+      <span class="lang-en">{{ page.title_en }}</span>
+      <span class="lang-zh" style="display:none;">{{ page.title_zh }}</span>
+    </h1>
+  </header>
+
+  <p class="text-gray-500 text-sm mb-8">
+    {{ page.date | date: "%B %d, %Y" }}
+  </p>
+
+  {{ content }}
+</article>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const zhBlocks = document.querySelectorAll(".lang-zh");
+  const enBlocks = document.querySelectorAll(".lang-en");
+  const btn = document.getElementById("lang-toggle");
+
+  const ENABLE_LANG_TOGGLE = false; // ✅ 暂时关闭：true = 显示中文按钮
+
+  const hasZh = zhBlocks.length > 0;
+  const hasEn = enBlocks.length > 0;
+
+  // 没有中英文同时存在，直接不处理
+  if (!hasZh || !hasEn || !btn) return;
+
+  // 默认：英文显示
+  zhBlocks.forEach(el => el.style.display = "none");
+  enBlocks.forEach(el => el.style.display = "block");
+
+  // 关闭开关：不显示按钮，也不绑定点击事件
+  if (!ENABLE_LANG_TOGGLE) {
+    btn.style.display = "none";
+    return;
+  }
+
+  // 开启开关：显示按钮并绑定点击
+  btn.style.display = "inline-block";
+  btn.innerText = "中文";
+
+  btn.addEventListener("click", () => {
+    const showingZh = zhBlocks[0].style.display !== "none";
+
+    if (showingZh) {
+      zhBlocks.forEach(el => el.style.display = "none");
+      enBlocks.forEach(el => el.style.display = "block");
+      btn.innerText = "中文";
+    } else {
+      zhBlocks.forEach(el => el.style.display = "block");
+      enBlocks.forEach(el => el.style.display = "none");
+      btn.innerText = "En";
+    }
+  });
+});
+</script>

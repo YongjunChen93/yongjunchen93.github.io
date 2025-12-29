@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- SEO & feed (jekyll-seo-tag will render <title> based on page.title) -->
+    {% seo %}
+    {% feed_meta %}
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Jekyll compiled CSS (from assets/main.scss) -->
+    <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  </head>
+
+  <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 max-w-3xl mx-auto px-6">
+
+    <!-- Only show the large site header on non-post pages -->
+    {% unless page.layout == "post" %}
+    <header class="py-10 text-center">
+      <h1 class="text-3xl font-bold">
+        <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+      </h1>
+      <p class="text-gray-500">{{ site.description }}</p>
+      <!-- <nav class="mt-4 space-x-6">
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/about' | relative_url }}">About</a>
+      </nav> -->
+    </header>
+    {% endunless %}
+
+    <main class="prose dark:prose-invert">
+      {{ content }}
+    </main>
+
+    <!-- Lightbox script (click to zoom) -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const overlay = document.createElement("div");
+      overlay.className = "lightbox-overlay";
+      overlay.innerHTML = `<img alt="">`;
+      document.body.appendChild(overlay);
+
+      const overlayImg = overlay.querySelector("img");
+
+      const open = (src, alt) => {
+        overlayImg.src = src;
+        overlayImg.alt = alt || "";
+        overlay.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      };
+
+      const close = () => {
+        overlay.classList.remove("is-open");
+        overlayImg.src = "";
+        document.body.style.overflow = "";
+      };
+
+      document.addEventListener("click", (e) => {
+        const img = e.target.closest("img.zoomable");
+        if (!img) return;
+        open(img.src, img.alt);
+      });
+
+      overlay.addEventListener("click", close);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && overlay.classList.contains("is-open")) {
+          close();
+        }
+      });
+    });
+    </script>
+  </body>
+</html>

@@ -4,6 +4,7 @@ table#tlayout {
     border: none;
     border-collapse: separate;
     background: white;
+    width: 100%;              /* ✅ 允许整体跟随窗口 */
 }
 
 body {
@@ -11,6 +12,11 @@ body {
 	font-family: Georgia, serif;
 	padding-bottom: 8px;
 	margin: 2;
+}
+
+
+#blog-list li {
+  margin-bottom: 0.6em;   /* 可调：0.5 ~ 1.2 */
 }
 
 #layout-menu {
@@ -32,13 +38,18 @@ body {
 }
 
 #layout-content {
-	padding-top: 0.0em;
-	padding-left: 1.0em;
-	padding-right: 1.0em;
+    padding-top: 0.0em;
+    padding-left: 1.0em;
+    padding-right: 1.0em;
     border: none;
     background: white;
     text-align: left;
     vertical-align: top;
+
+    width: 100%;              /* ✅ 响应式 */
+    max-width: 1200px;        /* ✅ 你页面现在最合适的宽度 */
+    margin: 0 auto;           /* ✅ 居中 */
+    box-sizing: border-box;
 }
 
 #layout-menu a {
@@ -364,4 +375,65 @@ img {
 table.imgtable, table.imgtable td {
     border: none;
     text-align: left;
+}
+
+/* =========================================================
+   Global link style — unified black, underline on hover
+   ========================================================= */
+
+/* Headings themselves (not just links inside headings) */
+h1, h2, h3, h4, h5, h6 {
+  color: #111 !important;
+}
+
+/* 普通链接（正文 / 列表 / 非标题区域） */
+a {
+  color: #111;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #111;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #111;
+}
+
+/* Click-to-zoom images */
+img.zoomable {
+  cursor: zoom-in;
+}
+
+/* Lightbox overlay */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 9999;
+}
+
+.lightbox-overlay.is-open {
+  display: flex;
+}
+
+.lightbox-overlay img {
+  max-width: min(1100px, 92vw);
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  cursor: zoom-out;
+}
+
+/* Make all images responsive by default */
+img {
+  max-width: 100%;
+  height: auto;
 }

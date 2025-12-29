@@ -5,20 +5,17 @@
     <meta name="generator" content="jemdoc, see http://jemdoc.jaboc.net/" />
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" href="jemdoc.css" type="text/css" />
+
     <style>
       body {
           font-family: 'Helvetica', sans-serif;
           margin-right: 10%;
           margin-left: 3%;
-/*          <!-- background-image: url("./images/bg.jpg");
-          background-position: center top;
-          background-size: 1300px, 280px;
-          background-repeat: no-repeat;
-          -->*/
       }
     </style>
 
     <title>Yongjun Chen </title>
+
     <!-- copied this email-hiding script from Silias Boyd-Wickizer
                   https://pdos.csail.mit.edu/~sbw/ -->
     <script type="text/javascript">
@@ -35,40 +32,216 @@
         }
       }
     </script>
-    
+
     <script type="text/javascript" async
       src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
     </script>
+
     <style>
-      .abstract {
-        display: none;
-      }
+      .abstract { display: none; }
       .abstract-show {
-        margin: 10px;
+        margin: 10px 0 0 0;
         padding: 7px;
         border: 1px dotted #A09040;
         text-align: justify;
       }
     </style>
+
+    <!-- ✅ NEW: Papers grid layout (border only wraps image) -->
+    <style>
+    /* ===== Blogs: text-only cards ===== */
+      /* ===== Blogs: text-only cards ===== */
+      .blogs-grid{
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 100px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 0;
+        list-style: none;
+      }
+
+      @media (max-width: 1100px){
+        .blogs-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 700px){
+        .blogs-grid{ grid-template-columns: 1fr; }
+      }
+
+      .blog-card{
+        max-width: 560px;
+        margin: 0;
+        justify-self: start;
+
+        min-height: 240px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .blog-title{
+        margin: 0;
+        font-weight: 800;
+        line-height: 1.15;
+        text-align: left;
+      }
+
+      .blog-title a{
+        text-decoration: none;
+        color: #111;
+      }
+
+      .blog-meta{
+        display: flex;
+        gap: 12px;
+        font-size: 13px;
+        color: #6b7280;
+        margin: 10px 0 14px 0;
+      }
+
+      .blog-category,
+      .blog-date{
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .blog-excerpt{
+        font-size: 16px;
+        line-height: 1.7;
+        color: #222;
+        margin: 0;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        margin-top: 6px;
+      }
+
+      /* ===== Paper: text + image ===== */
+      .papers-grid{
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 100px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 1100px){
+        .papers-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 700px){
+        .papers-grid{ grid-template-columns: 1fr; }
+      }
+
+      /* 这个外层不加边框：只负责布局 */
+      .paper-card{
+        background: transparent;
+      }
+
+      /* ✅ 边框只包图片 */
+      .paper-media{
+        border: 1px solid #e7e7e7;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        margin-bottom: 10px;  /* 图片边框与文字的间距 */
+        max-width: 90%;
+        margin-left: 0;
+        margin-right: auto;
+      }
+
+      .paper-thumb{
+        width: 100%;
+        height: 160px;          /* 想更小：200px；想更大：240px */
+        object-fit: contain;      /* “自然分割/杂志裁切” */
+        display: block;
+        cursor: zoom-in;
+      }
+
+      .paper-title{
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        line-height: 1.2;
+      }
+
+      .paper-authors{
+        font-size: 13px;
+        font-style: italic;
+        margin: 0 0 6px 0;
+        line-height: 1.25;
+      }
+
+      .paper-venue{
+        font-size: 13px;
+        margin: 0 0 8px 0;
+        line-height: 1.25;
+      }
+
+      .paper-links{
+        font-size: 13px;
+        line-height: 1.25;
+      }
+
+      .paper-links a{
+        text-decoration: none;
+      }
+    </style>
   </head>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Create overlay once
+    const overlay = document.createElement("div");
+    overlay.className = "lightbox-overlay";
+    overlay.innerHTML = `<img alt="">`;
+    document.body.appendChild(overlay);
+
+    const overlayImg = overlay.querySelector("img");
+
+    const open = (src, alt) => {
+      overlayImg.src = src;
+      overlayImg.alt = alt || "";
+      overlay.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+      overlay.classList.remove("is-open");
+      overlayImg.src = "";
+      document.body.style.overflow = "";
+    };
+
+    // Click to open (delegation)
+    document.addEventListener("click", (e) => {
+      const img = e.target.closest("img.zoomable");
+      if (!img) return;
+      open(img.src, img.alt);
+    });
+
+    // Click overlay to close
+    overlay.addEventListener("click", close);
+
+    // ESC to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("is-open")) close();
+    });
+  });
+  </script>
 
   <body>
     <h1>Yongjun Chen</h1>
     <table class="imgtable", style="color:black;"><tr><td>
       <img style="" src="images/selfie2.jpeg" alt="photography" width="160px" height="160px"/>&nbsp;</td>
       <td align="left">
-        <p><font><strong>About Me:</font></strong> currently a research engineer at Apple working on production reinforcement learning systems to align agentic models for <a href="https://www.apple.com/apple-intelligence/">Apple Intelligence</a>. I had worked on post-training large and small generative models for Apple Intelligence products, including <a href="https://support.apple.com/guide/iphone/find-the-right-words-with-writing-tools-iph6f08da1d2/ios">Writing Tools</a> and <a href="https://support.apple.com/guide/iphone/use-apple-intelligence-in-messages-iph64709c5c3/ios">Reply Suggestions</a>. Broadly interested in AI systems & products.
-        
-        <p>I was a research engineer at <a href="https://www.salesforceairesearch.com/">Salesforce AI Research</a>, where I worked on both research and applications of Sequential Recommender Systems, and AutoML. I earned my M.S. in Computer Science from Washington State University, advised by <a href="http://people.tamu.edu/~sji/">Prof. Shuiwang Ji</a>, and my B.S. in Mathematics and Statistics from Huazhong University of Science and Technology (HUST) in China. <br/>
-
-      <br/><font><strong>Contact:</font></strong> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
-
-      <br/><a href="https://www.linkedin.com/in/YongjunChen/"><br/>[Linkedin]</a>
+        Currently a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a> working on production reinforcement learning systems to align agentic models for <a href="https://www.apple.com/apple-intelligence/">Apple Intelligence</a>. <br><br>
+      <font><strong>Contact:</strong></font> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
+      <a href="https://www.linkedin.com/in/YongjunChen/">[Linkedin]</a>
       <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en">[Google Scholar]</a>
       <a href="https://github.com/YongjunChen93">[Github]</a>
       <script>
-        const host = window.location.hostname;
-        const isLocal = host === "localhost" || host === "127.0.0.1" || host === "";
+        const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
         const blogLink = isLocal
           ? "http://127.0.0.1:4000/blog/"
           : "blog/";
@@ -77,199 +250,217 @@
       </td></tr>
     </table>
 
+    <h2><a id="blogs-link" href="blog/">Blogs</a></h2>
 
-    <h2>Selected Publications</h2>
-    (* denotes equal contribution)
+    <script>
+      (function () {
+        const a = document.getElementById("blogs-link");
+        if (!a) return;
+        const isFile = location.protocol === "file:";
+        a.href = isFile ? "http://127.0.0.1:4000/blog/" : "blog/";
+      })();
+    </script>
 
-      <h3>Conference</h3>
-      
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Intent Contrastive Learning for Sequential Recommendation</strong><br></font>
-        <font><I>Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong<br></I></font> 
-        <font>The Web Conference <strong>(WWW)</strong>, 2022</font>
-        <div class="links">
+    <ul id="blog-list" class="blogs-grid">
+      <li>Loading…</li>
+    </ul>
+
+    <!-- Blogs loader -->
+    <script>
+    (function () {
+      const container = document.getElementById("blog-list");
+      if (!container) return;
+
+      const isFile = (location.protocol === "file:");
+
+      // ✅ 线上用相对路径（支持 GitHub Pages repo 子路径）
+      const BLOG_BASE = isFile
+        ? "http://127.0.0.1:4000/blog"
+        : (new URL("./blog", location.href)).toString().replace(/\/$/, "");
+
+      // ✅ cache-busting：防止浏览器执行旧版 posts.js（你现在的核心问题）
+      const FEED_JS = BLOG_BASE + "/posts.js?v=" + Date.now();
+
+      const s = document.createElement("script");
+      s.src = FEED_JS;
+      s.async = true;
+
+      const stripHtml = (html) =>
+        (html || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
+      const pickCategory = (p) => {
+        const cats = p.categories || p.category || [];
+        if (Array.isArray(cats) && cats.length) return String(cats[0]);
+        if (typeof cats === "string" && cats) return cats;
+        return "未分类";
+      };
+
+      const pickExcerpt = (p) => {
+        const candidates = [p.excerpt, p.summary, p.description, p.content];
+        for (const c of candidates) {
+          const t = stripHtml(c);
+          if (t) return t;
+        }
+        return "";
+      };
+
+      s.onload = () => {
+        const posts = window.__BLOG_POSTS__;
+        if (!Array.isArray(posts) || posts.length === 0) {
+          container.innerHTML = "<li>No posts yet.</li>";
+          return;
+        }
+
+        const limit = 9;
+
+        container.innerHTML = posts.slice(0, limit).map((p) => {
+          const href = BLOG_BASE + (p.url || "");
+          const title = p.title || "Untitled";
+          const date = p.date || "";
+          const category = pickCategory(p);
+          const excerpt = pickExcerpt(p);
+
+          return `
+            <li>
+              <article class="blog-card">
+                <h3 class="blog-title"><a href="${href}">${title}</a></h3>
+                <div class="blog-meta">
+                  <span class="blog-category">${category}</span>
+                  <span class="blog-date">${date}</span>
+                </div>
+                <p class="blog-excerpt">${excerpt}</p>
+              </article>
+            </li>
+          `;
+        }).join("");
+      };
+
+      s.onerror = () => {
+        container.innerHTML = `<li>Failed to load posts. <a href="${BLOG_BASE}/">Open blog</a></li>`;
+      };
+
+      document.head.appendChild(s);
+    })();
+    </script>
+
+    <h2>Selected Papers</h2>
+
+    <!-- ✅ NEW Papers Layout -->
+    <div class="papers-grid">
+
+      <!-- Paper 1 -->
+      <div class="paper-card">
+        <div class="paper-media">
+          <img
+            src="images/icl.png"
+            alt="Intent Contrastive Learning for Sequential Recommendation"
+            class="paper-thumb zoomable"
+          />
+        </div>
+
+        <div class="paper-title">Intent Contrastive Learning for Sequential Recommendation, WWW@2022</div>
+        <div class="paper-authors">Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong</div>
+
+        <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
           [<a href="https://arxiv.org/pdf/2202.02519.pdf">Paper</a>]
           [<a href="https://github.com/salesforce/ICLRec">Code</a>]
-        <div class="abstract", style="line-height:20px">
-          Users’ interactions with items are driven by various intents (e.g., preparing for holiday gifts, shopping for fishing equipment, etc.). However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor for Sequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and the SR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.</div>
-      </td></tr></table>
-
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>ELECRec: Training Sequential Recommenders as Discriminators</strong><br></font>
-        <font><I>Yongjun Chen, Jia Li, Caiming Xiong<br></I></font> 
-        <font>The 45th International ACM SIGIR Conference on Research and Development in Information Retrieval <strong>(SIGIR)</strong>, 2022</font>
-        <div class="links">
-          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/2204.02011.pdf">Paper</a>]
-          [<a href="https://github.com/YChen1993/ELECRec">Code</a>]
-        <div class="abstract", style="line-height:20px">
-          Sequential recommendation is often considered as a generative
-          task, i.e., training a sequential encoder to generate the next item of
-          a user’s interests based on her historical interacted items. Despite
-          their prevalence, these methods usually require training with more
-          meaningful samples to be effective, which otherwise will lead to
-          a poorly trained model. In this work, we propose to train the sequential 
-          recommenders as discriminators rather than generators.
-          Instead of predicting the next item, our method trains a discriminator 
-          to distinguish if a sampled item is a ‘real’ target item or not. 
-          A generator, as an auxiliary model, is trained jointly with the discriminator 
-          to sample plausible alternative next items and will be thrown
-          out after training. The trained discriminator is considered as the
-          final SR model and denoted as ELECRec. Experiments conducted
-          on four datasets demonstrate the effectiveness and efficiency of the
-          proposed approach.
         </div>
-      </td></tr></table>
 
-        <table class="imgtable"><tr><td>
-<!--           <img src="images/voxeldeconvolution.png" alt="photography" width="300px" height="150px" />&nbsp; -->
-          </td>
-          <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Voxel Deconvolutional Networks for 3D Brain Image Labeling</strong><br></font>
-          <font><I>Yongjun Chen</font>, Hongyang Gao, Lei Cai, Min Shi, Dinggang Shen and Shuiwang Ji<br></I></font> 
-          <font>The 24th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining <strong>(KDD)</strong>, 2018</font>
-          <div class="links">[<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-            [<a href="http://delivery.acm.org/10.1145/3220000/3219974/p1226-chen.pdf?ip=69.166.46.137&id=3219974&acc=OPENTOC&key=B63ACEF81C6334F5%2E3B1D11B7501B70D8%2E4D4702B0C3E38B35%2E054E54E275136550&__acm__=1535680435_e69225cf8c7ed216e2e0a11ee85f4452">Paper</a>]
-            [<a href="https://github.com/divelab/VoxelDCN">Code</a>]
-            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_slides_vdn.pdf">Slides</a>]
-            [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_poster_vdn.pdf">Poster</a>]</div>
-          <div class="abstract", style="line-height:20px">Deep learning methods have shown great success in pixel-wise
-            prediction tasks. One of the most popular methods employs an
-            encoder-decoder network in which deconvolutional layers are used
-            for up-sampling feature maps. However, a key limitation of the
-            deconvolutional layer is that it suers from the checkerboard artifact
-            problem, which harms the prediction accuracy. is is caused
-            by the independency among adjacent pixels on the output feature
-            maps. Previous work only solved the checkerboard artifact issue of
-            deconvolutional layers in the 2D space. Since the number of intermediate
-            feature maps needed to generate a deconvolutional layer
-            grows exponentially with dimensionality, it is more challenging to
-            solve this issue in higher dimensions. In this work, we propose the
-            voxel deconvolutional layer (VoxelDCL) to solve the checkerboard
-            artifact problem of deconvolutional layers in 3D space. We also
-            provide an ecient approach to implement VoxelDCL. To demonstrate
-            the eectiveness of VoxelDCL, we build four variations of
-            voxel deconvolutional networks (VoxelDCN) based on the U-Net
-            architecture with VoxelDCL. We apply our networks to address
-            volumetric brain images labeling tasks using the ADNI and LONI
-            LPBA40 datasets. e experimental results show that the proposed
-            iVoxelDCNa achieves improved performance in all experiments.
-            It reaches 83.34% in terms of dice ratio on the ADNI dataset and
-            79.12% on the LONI LPBA40 dataset, which increases 1.39% and
-            2.21% respectively compared with the baseline. In addition, all the
-            variations of VoxelDCN we proposed outperform the baseline methods
-            on the above datasets, which demonstrates the eectiveness of
-            our methods.</div>
-          </td></tr>
-      </table>
+        <div class="abstract" style="line-height:20px">
+          Users’ interactions with items are driven by various intents (e.g., preparing for holiday gifts, shopping for fishing equipment, etc.). However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor for Sequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and the SR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.
+        </div>
+      </div>
 
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Modeling Dynamic Attributes for Next Basket Recommendation</strong><br></font>
-        <font><I>Yongjun Chen, Jia Li, Chenghao Liu, Chenxi Li, Markus Anderle, Julian McAuley, Caiming Xiong<br></I></font> 
-        <font>Context-Aware Recommender Systems Workshop at ACM Conference on Recommender Systems <strong>(CARS@RecSys)</strong>, 2021</font>
-        <div class="links">
+      <!-- Paper 2 -->
+      <div class="paper-card">
+        <div class="paper-media">
+          <img
+            src="images/voxel.png"
+            alt="Voxel Deconvolutional Networks for 3D Image Labeling"
+            class="paper-thumb zoomable"
+          />
+        </div>
+
+        <div class="paper-title">Voxel Deconvolutional Networks for 3D Image Labeling, 2018@KDD</div>
+        <div class="paper-authors">Yongjun Chen, Hongyang Gao, Lei Cai, Min Shi, Dinggang Shen and Shuiwang Ji</div>
+        <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/2109.11654.pdf">Paper</a>]
-          [<a href="https://github.com/YChen1993/AnDa">Code</a>]
-        <div class="abstract", style="line-height:20px">
-          Traditional approaches to next-item and next basket recommendation typically extract users’ interests based on their past interactions and associated static contextual information (e.g. a user id or item category). However, extracted interests can be inaccurate and become obsolete. Dynamic attributes, such as user income changes, item price changes (etc.), change over time. Such dynamics can intrinsically reflect the evolution of users’ interests. We argue that modeling such dynamic attributes can boost recommendation performance. However, properly integrating them into user interest models is challenging since attribute dynamics can be diverse such as time-interval aware, periodic patterns (etc.), and they represent users’ behaviors from different perspectives, which can happen asynchronously with interactions. Besides dynamic attributes, items in each basket contain complex interdependencies which might be beneficial but nontrivial to effectively capture. To address these challenges, we propose a novel Attentive network to model Dynamic attributes (named AnDa). AnDa separately encodes dynamic attributes and basket item sequences. We design a periodic aware encoder to allow the model to capture various temporal patterns from dynamic attributes. To effectively learn useful item relationships, intra-basket attention module is proposed. Experimental results on three real-world datasets demonstrate that our method consistently outperforms the state-of-the-art.</div>
-      </td></tr></table>
+          [<a href="http://delivery.acm.org/10.1145/3220000/3219974/p1226-chen.pdf?ip=69.166.46.137&id=3219974&acc=OPENTOC&key=B63ACEF81C6334F5%2E3B1D11B7501B70D8%2E4D4702B0C3E38B35%2E054E54E275136550&__acm__=1535680435_e69225cf8c7ed216e2e0a11ee85f4452">Paper</a>]
+          [<a href="https://github.com/divelab/VoxelDCN">Code</a>]
+          [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_slides_vdn.pdf">Slides</a>]
+          [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_poster_vdn.pdf">Poster</a>]
+        </div>
 
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/WWW19.png" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Learning Graph Pooling and Hybrid Convolutional Operations for Text Representations</strong><br></font>
-        <font><I>Hongyang Gao, Yongjun Chen</font>, and Shuiwang Ji<br></I></font> 
-        <font>The Web Conference <strong>(WWW)</strong>, 2019</font>
-        <div class="links">
+        <div class="abstract" style="line-height:20px">
+          Deep learning methods have shown great success in pixel-wise
+          prediction tasks. One of the most popular methods employs an
+          encoder-decoder network in which deconvolutional layers are used
+          for up-sampling feature maps. However, a key limitation of the
+          deconvolutional layer is that it suffers from the checkerboard artifact
+          problem, which harms the prediction accuracy. This is caused
+          by the independency among adjacent pixels on the output feature
+          maps. Previous work only solved the checkerboard artifact issue of
+          deconvolutional layers in the 2D space. Since the number of intermediate
+          feature maps needed to generate a deconvolutional layer
+          grows exponentially with dimensionality, it is more challenging to
+          solve this issue in higher dimensions. In this work, we propose the
+          voxel deconvolutional layer (VoxelDCL) to solve the checkerboard
+          artifact problem of deconvolutional layers in 3D space. We also
+          provide an efficient approach to implement VoxelDCL. To demonstrate
+          the effectiveness of VoxelDCL, we build four variations of
+          voxel deconvolutional networks (VoxelDCN) based on the U-Net
+          architecture with VoxelDCL. We apply our networks to address
+          volumetric brain images labeling tasks using the ADNI and LONI
+          LPBA40 datasets. The experimental results show that the proposed
+          iVoxelDCNa achieves improved performance in all experiments.
+          It reaches 83.34% in terms of dice ratio on the ADNI dataset and
+          79.12% on the LONI LPBA40 dataset, which increases 1.39% and
+          2.21% respectively compared with the baseline. In addition, all the
+          variations of VoxelDCN we proposed outperform the baseline methods
+          on the above datasets, which demonstrates the effectiveness of
+          our methods.
+        </div>
+      </div>
+
+      <!-- Paper 3 -->
+      <div class="paper-card">
+        <div class="paper-media">
+          <img
+            src="images/dtn.png"
+            alt="Dense Transformer Networks"
+            class="paper-thumb zoomable"
+          />
+        </div>
+
+        <div class="paper-title">Dense Transformer Networks, 2019@IJCAI</div>
+        <div class="paper-authors">Jun Li, Yongjun Chen, Lei Cai, Ian Davidson, and Shuiwang Ji</div>
+        <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/1901.06965.pdf">Paper</a>]
-        <div class="abstract", style="line-height:20px">With the development of graph convolutional networks (GCN), deep learning methods have started to be used on graph data. In additional
-          to convolutional layers, pooling layers are another important components
-          of deep learning. However, no effective pooling methods
-          have been developed for graphs currently. In this work, we propose
-          the graph pooling (gPool) layer, which employs a trainable
-          projection vector to measure the importance of nodes in graphs. By
-          selecting the k-most important nodes to form the new graph, gPool
-          achieves the same objective as regular max pooling layers operating
-          on images. Another limitation of GCN when used on graph-based
-          text representation tasks is that, GCNs do not consider the order
-          information of nodes in graph. To address this limitation, we propose
-          the hybrid convolutional (hConv) layer that combines GCN
-          and regular convolutional operations. The hConv layer is capable of
-          increasing receptive fields quickly and computing features automatically.
-          Based on the proposed gPool and hConv layers, we develop
-          new deep networks for text categorization tasks. Our results show
-          that the networks based on gPool and hConv layers achieves new
-          state-of-the-art performance as compared to baseline methods.</div>
-      </td></tr></table>
-
-      <table class="imgtable"><tr><td>
-      <!--   <img src="images/architecture.png" alt="photography" width="300px" height="150px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Dense Transformer Networks</strong><br></font>
-        <font><I>Jun Li, <font>Yongjun Chen</font>, Lei Cai, Ian Davidson, and Shuiwang Ji<br></I></font> 
-        <font>The 28th International Joint Conference on Artificial Intelligence <strong>(IJCAI)</strong>, 2019</font>
-        <div class="links">[<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
           [<a href="https://arxiv.org/abs/1705.08881">Paper</a>]
-          [<a href="https://github.com/divelab/dtn">Code</a>]</div>
-        <div class="abstract", style="line-height:20px">The key idea of current deep learning methods for dense prediction is to apply a model on a regular patch centered on each pixel to make pixel-wise predictions. These methods are limited in the sense that the patches are determined by network architecture instead of learned from data. In this work, we propose the dense transformer networks, which can learn the shapes and sizes of patches from data. The dense transformer networks employ an encoder-decoder architecture, and a pair of dense transformer modules are inserted into each of the encoder and decoder paths. The novelty of this work is that we provide technical solutions for learning the shapes and sizes of patches from data and efficiently restoring the spatial correspondence required for dense prediction. The proposed dense transformer modules are differentiable, thus the entire network can be trained. We apply the proposed networks on natural and biological image segmentation tasks and show superior performance is achieved in comparison to baseline methods.</div>
-          </td></tr>
-      </table>
+          [<a href="https://github.com/divelab/dtn">Code</a>]
+        </div>
 
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Interpreting Deep Models for Text Analysis via Optimization and Regularization Methods</strong><br></font>
-        <font><I>Hao Yuan, Yongjun Chen</font>, Xia Hu and Shuiwang Ji<br></I></font> 
-        <font>The 33rd AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2019</font>
-        <div class="links">
-          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://ojs.aaai.org//index.php/AAAI/article/view/4517">Paper</a>]
-        <div class="abstract", style="line-height:20px">
-          Interpreting deep neural networks is of great importance to
-          understand and verify deep models for natural language processing
-          (NLP) tasks. However, most existing approaches only
-          focus on improving the performance of models but ignore
-          their interpretability. In this work, we propose an approach to
-          investigate the meaning of hidden neurons of convolutional
-          neural network (CNN) models.We first employ saliency map
-          and optimization techniques to approximate the detected information
-          of hidden neurons from input sentences. Then we
-          develop regularization terms and explore words in vocabulary
-          to interpret such detected information. Experimental results
-          demonstrate that our approach can identify meaningful and
-          reasonable interpretations for hidden spatial locations. Additionally,
-          we show that our approach can describe the decision
-          procedure of deep NLP models.</div>
-      </td></tr></table>
+        <div class="abstract" style="line-height:20px">
+          The key idea of current deep learning methods for dense prediction is to apply a model on a regular patch centered on each pixel to make pixel-wise predictions. These methods are limited in the sense that the patches are determined by network architecture instead of learned from data. In this work, we propose the dense transformer networks, which can learn the shapes and sizes of patches from data. The dense transformer networks employ an encoder-decoder architecture, and a pair of dense transformer modules are inserted into each of the encoder and decoder paths. The novelty of this work is that we provide technical solutions for learning the shapes and sizes of patches from data and efficiently restoring the spatial correspondence required for dense prediction. The proposed dense transformer modules are differentiable, thus the entire network can be trained. We apply the proposed networks on natural and biological image segmentation tasks and show superior performance is achieved in comparison to baseline methods.
+        </div>
+      </div>
 
+    </div>
+    <!-- ✅ END Papers -->
 
-     <h3>Preprints</h3>
+  <h2>About Me</h2>
+    <table class="imgtable", style="color:black;"><tr><td>
+      <td align="left">
+        <p><font>Currently a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a>, where I worked on <a href="https://www.apple.com/apple-intelligence/"><strong>Apple Intelligence</strong></a> initiatives end-to-end since 2022, from early training/serving pipelines exploration to AI feature launches.<br>
+        Efforts spanning benchmark training infra (e.g., jax w/ TPU vs pytorch w/ GPU) in early days, production data synthesis and mixture design, post-training and model distillation experimentation for both large and small models, and building ReAct style long-horizon reinforcement learning for aligning agentic models.<br>
+        Influenced the first batches of AI feature launches including <a href="https://support.apple.com/guide/iphone/find-the-right-words-with-writing-tools-iph6f08da1d2/ios"><strong>Writing Tools</strong></a> and <a href="https://support.apple.com/guide/iphone/use-apple-intelligence-in-messages-iph64709c5c3/ios"><strong>Reply Suggestions</strong></a>.</p>
 
-      <table class="imgtable"><tr><td>
-        <!-- <img src="images/AAAI19.jpg" alt="photography" width="300px" height="120px" />&nbsp; -->
-      </td>
-        <td align="left", style="line-height:20px;"><font size="4.0px"><strong>Contrastive Self-supervised Sequential Recommendation with Robust Augmentation</strong><br></font>
-        <font><I>Zhiwei Liu*, Yongjun Chen*, Jia Li, Philip S. Yu, Julian McAuley, Caiming Xiong</I><br></font> 
-        <font>Preprint, 2021</font>
-        <div class="links">
-          [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
-          [<a href="https://arxiv.org/pdf/2108.06479.pdf">Paper</a>]
-          [<a href="https://github.com/YChen1993/CoSeRec">Code</a>]
-        <div class="abstract", style="line-height:20px">
-          Sequential Recommendation describes a set of techniques to model
-          dynamic user behavior in order to predict future interactions in sequential user data. At their core, such approaches model transition probabilities between items in a sequence, whether through Markov chains, recurrent networks, or more recently, Transformers. However both old and new issues remain, including data-sparsity and noisy data; such issues can impair performance, especially in complex, parameter-hungry models. In this paper, we investigate the application of contrastive Self-Supervised Learning (SSL) to sequential recommendation, as a way to alleviate some of these issues. Contrastive SSL constructs augmentations from unlabelled instances, where agreements among positive pairs are maximized. It is challenging to devise a contrastive SSL framework for sequential recommendation, due to its discrete nature, correlations among items, and skewness of length distributions. To this end, we propose a novel framework, Contrastive Self-supervised Learning for Sequential Recommendation (CoSeRec). We introduce two informative augmentation operators leveraging item correlations to create high quality views for contrastive learning. Experimental results on three real-world datasets demonstrate the effectiveness of the proposed method on improving model performance, and the robustness against sparse and noisy data. Our implementation is available: https://github.com/YChen1993/CoSeRec.</div>
-      </td></tr></table>
+        <p>Before Apple, I was a senior research engineer at <a href="https://www.salesforceairesearch.com/"><strong>Salesforce AI Research</strong></a> (2019-2022) and worked on both research and applications of sequential recommender systems, and AutoML.</p>
+      </td></tr>
+    </table>
 
-  </body>
-    <h2>Education</h2>
+    <h3>Education</h3>
       <ul>
         <li><p>M.S., Computer Science, <a href="https://wsu.edu/">Washington State University</a>, August 2016 - Dec. 2018</p>
           <ul>
@@ -280,40 +471,10 @@
         </li>
       </ul>
 
-    <h2>Professional Services</h2>
-      <h3>DM/ML/AI Conference Reviewer</h3>
-        <!-- <font color="#676868">DM/ML/AI Conferences</font>  -->
+    <!-- <h3>DM/ML/AI Conference Reviewer</h3>
         <ul>
         <li><p>2025: COLING; 2024: TKDE, ACL, EMNLP; 2023: ACL; 2022: UAI, EMNLP, AAAI, ACML, TOIS; 2021: NAACL</p></li>
         <li><p>2020 and before: KDD, CIKM, NeurIPS, ICDM, TKDE</p></li>
-        </ul>
-<!--       <h3>Teaching Assistant</h3>
-        <font color="#676868">Washington State University, WA, USA</font> 
-        <ul>
-        <li><p>Spring 2018: CptS 437 Introduction to Machine Learning</p>
-        </li>
-        <li><p>Fall 2017: CptS 355 Programming Language Design</p>
-        </li>
-        <li><p>Fall 2017: CptS 440/540 Artificial Intelligence</p>
-        </li>
-        <li><p>Spring 2017: EE 221 Numerical Computing for Engineers</p>
-        </li>
-        <li><p>Spring 2017: CptS 223 Advanced Data Structures C/C++</p>
-        </li>
         </ul> -->
-
-
-    <h2>Honors & Awards</h2>
-        <ul>
-        <li><p>Pennyworth@Salesforce is ranked #4 of 
-        <a href="https://algo.browser.qq.com/#en">CIKM 2021 AnalytiCup on Automated Hyperparameter Optimization</a> (led the competition), Oct. 2021.</p>
-        </li>
-        <li><p>Excellent Graduate, HUST, June. 2016. </p>
-        </li>
-        <li><p>Honorable mention prize of The International Interdisciplinary Contest in Modeling (ICM), Feb. 2015.</p>
-        </li>
-        <li><p>
-        Undergraduate Science and Technology Innovation Scholarship, HUST, Feb. 2014, 2015.</p>
-        </ul>
+  </body>
 </html>
-

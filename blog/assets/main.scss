@@ -1,0 +1,218 @@
+---
+---
+
+@import "minima";
+
+
+/* === Header links: black text, underline on hover only === */
+header a {
+  color: inherit !important;   /* 不再蓝色 */
+  text-decoration: none;
+}
+
+header a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* === Text Content === */
+main.prose a {
+  color: inherit;          /* 永远跟正文同色 */
+  text-decoration: none;  /* 默认无下划线 */
+}
+
+main.prose a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;  /* 可选，更好看 */
+}
+
+main.prose a:visited {
+  color: inherit;          /* 防止 visited 变紫 */
+}
+
+/* === Code Content === */
+article pre,
+.post-content pre,
+main pre {
+  background: #f4f5f6 !important;      /* 暖米色背景 */
+  border: 1px solid #e6e2da !important;
+  border-radius: 10px !important;
+  padding: 16px 18px !important;
+  margin: 1.5em 0 !important;
+  overflow-x: auto !important;
+}
+
+/* code 本体 */
+article pre code,
+.post-content pre code,
+main pre code {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #2f2f2f !important;
+}
+
+/* comment color（Rouge) */
+.highlight .c,
+.highlight .cm,
+.highlight .c1 {
+  color: #6b7280 !important;
+  font-style: italic;
+}
+
+/* inline code */
+article p code,
+article li code {
+  background: #f0ede7;
+  border: 1px solid #e1ddd5;
+  border-radius: 4px;
+  padding: 0.15em 0.35em;
+  font-size: 0.9em;
+}
+
+
+/* === Image === */
+.zoomable {
+  cursor: zoom-in;
+}
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+
+.lightbox-overlay.is-open {
+  display: flex;
+}
+
+.lightbox-overlay img {
+  max-width: min(1200px, 95vw);
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  cursor: zoom-out;
+}
+
+
+/* =========================
+   Blog index grid layout
+   ========================= */
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 1024px) {
+  .blog-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .blog-grid { grid-template-columns: 1fr; }
+}
+
+.blog-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px 18px 16px;
+  background: #fff;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.06);
+}
+
+/* meta row */
+.blog-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.blog-cat {
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.blog-dot { opacity: 0.6; }
+
+.blog-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* 标题链接：黑色，hover 只下划线不变色 */
+.blog-title a {
+  color: #111 !important;
+  text-decoration: none !important;
+}
+
+.blog-title a:hover {
+  color: #111 !important;
+  text-decoration: underline !important;
+}
+
+.blog-excerpt {
+  margin: 0 0 14px;
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* read more */
+.blog-readmore {
+  color: #111 !important;
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.blog-readmore:hover {
+  color: #111 !important;
+  text-decoration: underline !important;
+}
+
+/* pager */
+.blog-pager {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.blog-page-link {
+  color: #111 !important;
+  text-decoration: none !important;
+}
+
+.blog-page-link:hover {
+  color: #111 !important;
+  text-decoration: underline !important;
+}
+
+.blog-page-indicator {
+  color: #6b7280;
+}
+
