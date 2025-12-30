@@ -437,3 +437,25 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+/* ===== About Me: muted style (only this section) ===== */
+.about-muted {
+  color: #4b5563;          /* 灰色正文 */
+  font-size: 14.5px;       /* 比默认略小 */
+  line-height: 1.7;        /* 更舒服 */
+}
+
+/* About 内段落间距稍微紧凑一点 */
+.about-muted p {
+  margin: 0 0 10px 0;
+}
+
+/* About 内链接也降权（避免变蓝） */
+.about-muted a {
+  color: #374151;          /* 深灰链接 */
+  text-decoration: none;
+}
+
+.about-muted a:hover {
+  text-decoration: underline;
+}
