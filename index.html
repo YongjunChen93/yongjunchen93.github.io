@@ -175,10 +175,9 @@
 
       .paper-venue{
         font-size: 13px;
-        margin: 0 0 8px 0;
-        line-height: 1.25;
+        color: #6b7280;
+        margin-left: 0 0 6px 0;
       }
-
       .paper-links{
         font-size: 13px;
         line-height: 1.25;
@@ -350,22 +349,22 @@
 
       <!-- Paper 1 -->
       <div class="paper-card">
-        <div class="paper-media">
+        <!-- <div class="paper-media">
           <img
             src="images/icl.png"
             alt="Intent Contrastive Learning for Sequential Recommendation"
             class="paper-thumb zoomable"
           />
-        </div>
+        </div> -->
 
-        <div class="paper-title">Intent Contrastive Learning for Sequential Recommendation, WWW@2022</div>
+        <div class="paper-title">Intent Contrastive Learning for Sequential Recommendation</div>
         <div class="paper-authors">Yongjun Chen, Zhiwei Liu, Jia Li, Julian McAuley, Caiming Xiong</div>
-
         <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
           [<a href="https://arxiv.org/pdf/2202.02519.pdf">Paper</a>]
           [<a href="https://github.com/salesforce/ICLRec">Code</a>]
         </div>
+        <div class="paper-venue">WWW 2022</div>
 
         <div class="abstract" style="line-height:20px">
           Users’ interactions with items are driven by various intents (e.g., preparing for holiday gifts, shopping for fishing equipment, etc.). However, users’ underlying intents are often unobserved/latent,making it challenging to leverage such a latent intent factor for Sequential recommendation(SR). To investigate the benefits of latent intent and leverage it effectively for recommendation, we proposeIntentContrastiveLearning(ICL), a general learning paradigm that leverages a latent intent variable into SR. The core idea is to learn users’ intent distribution functions from unlabeled user behavior sequences and optimize SR models with contrastive self-supervised learning (SSL) by considering the learnt intents to improve recommendation. Specifically, we introduce a latent variable to represent users’ intents and learn the distribution function of the latent variable via clustering. We propose to leverage the learnt intents intoSR models via contrastive SSL, which maximizes the agreement between a view of sequence and its corresponding intent. The training is alternated between intent representation learning and the SR model optimization steps within the generalized expectation-maximization (EM) framework. Fusing user intent information intoSR also improves model robustness. Experiments conducted on four real-world datasets demonstrate the superiority of the proposed learning paradigm, which improves performance, and robustness against data sparsity and noisy interaction issues. Case studies onSports and Yelp further verify the effectiveness of ICL.
@@ -374,15 +373,8 @@
 
       <!-- Paper 2 -->
       <div class="paper-card">
-        <div class="paper-media">
-          <img
-            src="images/voxel.png"
-            alt="Voxel Deconvolutional Networks for 3D Image Labeling"
-            class="paper-thumb zoomable"
-          />
-        </div>
 
-        <div class="paper-title">Voxel Deconvolutional Networks for 3D Image Labeling, 2018@KDD</div>
+        <div class="paper-title">Voxel Deconvolutional Networks for 3D Image Labeling</div>
         <div class="paper-authors">Yongjun Chen, Hongyang Gao, Lei Cai, Min Shi, Dinggang Shen and Shuiwang Ji</div>
         <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
@@ -391,6 +383,7 @@
           [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_slides_vdn.pdf">Slides</a>]
           [<a href="https://www.eecs.wsu.edu/~ychen3/kdd_poster_vdn.pdf">Poster</a>]
         </div>
+        <div class="paper-venue">KDD 2018</div>
 
         <div class="abstract" style="line-height:20px">
           Deep learning methods have shown great success in pixel-wise
@@ -425,21 +418,14 @@
 
       <!-- Paper 3 -->
       <div class="paper-card">
-        <div class="paper-media">
-          <img
-            src="images/dtn.png"
-            alt="Dense Transformer Networks"
-            class="paper-thumb zoomable"
-          />
-        </div>
-
-        <div class="paper-title">Dense Transformer Networks, 2019@IJCAI</div>
+        <div class="paper-title">Dense Transformer Networks</div>
         <div class="paper-authors">Jun Li, Yongjun Chen, Lei Cai, Ian Davidson, and Shuiwang Ji</div>
         <div class="paper-links">
           [<a href="javascript:void(0)" onclick="toggle_abstract(this)">Abstract</a>]
           [<a href="https://arxiv.org/abs/1705.08881">Paper</a>]
           [<a href="https://github.com/divelab/dtn">Code</a>]
         </div>
+        <div class="paper-venue">IJCAI 2019</div>
 
         <div class="abstract" style="line-height:20px">
           The key idea of current deep learning methods for dense prediction is to apply a model on a regular patch centered on each pixel to make pixel-wise predictions. These methods are limited in the sense that the patches are determined by network architecture instead of learned from data. In this work, we propose the dense transformer networks, which can learn the shapes and sizes of patches from data. The dense transformer networks employ an encoder-decoder architecture, and a pair of dense transformer modules are inserted into each of the encoder and decoder paths. The novelty of this work is that we provide technical solutions for learning the shapes and sizes of patches from data and efficiently restoring the spatial correspondence required for dense prediction. The proposed dense transformer modules are differentiable, thus the entire network can be trained. We apply the proposed networks on natural and biological image segmentation tasks and show superior performance is achieved in comparison to baseline methods.
