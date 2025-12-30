@@ -440,7 +440,7 @@ img {
 
 /* ===== About Me: muted style (only this section) ===== */
 .about-muted {
-  color: #4b5563;          /* 灰色正文 */
+  color: #6b7280;          /* 灰色正文 */
   font-size: 14.5px;       /* 比默认略小 */
   line-height: 1.7;        /* 更舒服 */
 }
@@ -458,4 +458,11 @@ img {
 
 .about-muted a:hover {
   text-decoration: underline;
+}
+
+/* ===== Top intro spacing ===== */
+.intro{
+  margin-top: 56px;
+  margin-bottom: 32px;
+  font-size: 1.05rem;
 }

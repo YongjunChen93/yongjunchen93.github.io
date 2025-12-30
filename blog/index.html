@@ -7,11 +7,26 @@ title: "Blog"
 
 {% for post in posts_list %}
   <div class="mb-10">
-    <a href="{{ post.url | relative_url }}" class="text-2xl font-semibold hover:underline">
+    <a href="{{ post.url | relative_url }}" class="text-2xl font-semibold hover:underline text-gray-900 dark:text-gray-100">
       {{ post.title_en | default: post.title }}
     </a>
-    <p class="text-gray-500 text-sm">{{ post.date | date: "%b %d, %Y" }}</p>
-    <p class="mt-2 text-gray-700 dark:text-gray-300">{{ post.excerpt }}</p>
+
+    <!-- meta: categories + date -->
+    <p class="text-gray-500 text-sm mt-1">
+      {% if post.categories and post.categories.size > 0 %}
+        <span class="font-medium">{{ post.categories | join: " / " }}</span>
+        <span class="mx-2">·</span>
+      {% endif %}
+      <span>{{ post.date | date: "%b %d, %Y" }}</span>
+    </p>
+
+    <!-- excerpt -->
+    {% assign ex = post.excerpt | strip_html | strip_newlines | replace: "  ", " " | strip %}
+    {% if ex and ex != "" %}
+      <p class="mt-2 text-gray-700 dark:text-gray-300">
+        {{ ex }}
+      </p>
+    {% endif %}
   </div>
 {% endfor %}
 

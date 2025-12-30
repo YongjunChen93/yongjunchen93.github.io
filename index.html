@@ -51,15 +51,20 @@
     <style>
     /* ===== Blogs: text-only cards ===== */
       /* ===== Blogs: text-only cards ===== */
-      .blogs-grid{
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 100px;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        padding: 0;
-        list-style: none;
-      }
+    
+    
+    .blogs-grid{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      column-gap: 80px;  /* 横向留白，保持高级感 */
+      row-gap: 32px;     /* 纵向紧凑，适合阅读 */
+
+      margin-top: 8px;
+      margin-bottom: 8px;
+      padding: 0;
+      list-style: none;
+    }
 
       @media (max-width: 1100px){
         .blogs-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -122,9 +127,13 @@
       .papers-grid{
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 100px;
-        margin-top: 20px;
-        margin-bottom: 20px;
+
+        /* ✅ 一致的 rhythm：横向呼吸 + 纵向紧凑 */
+        column-gap: 80px;   /* 左右间距（保持高级感） */
+        row-gap: 32px;      /* 上下间距（统一节奏） */
+
+        margin-top: 8px;
+        margin-bottom: 8px;
       }
 
       @media (max-width: 1100px){
@@ -230,24 +239,11 @@
   </script>
 
   <body>
-    <h1>Yongjun Chen</h1>
-    <table class="imgtable", style="color:black;"><tr><td>
-      <img style="" src="images/selfie2.jpeg" alt="photography" width="160px" height="160px"/>&nbsp;</td>
-      <td align="left">
-        Currently a research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a> working on <a href="https://www.apple.com/apple-intelligence/">Apple Intelligence</a>. <br><br>
-      <font><strong>Contact:</strong></font> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
-      <a href="https://www.linkedin.com/in/YongjunChen/">[Linkedin]</a>
-      <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en">[Google Scholar]</a>
-      <!-- <a href="https://github.com/YongjunChen93">[Github]</a> -->
-      <script>
-        const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
-        const blogLink = isLocal
-          ? "http://127.0.0.1:4000/blog/"
-          : "blog/";
-        document.write(`<a href="${blogLink}">[Blog]</a>`);
-      </script>
-      </td></tr>
-    </table>
+    <!-- <h1>Yongjun Chen</h1> -->
+    <section class="intro">
+      
+    I’m a research engineer working on <a href="https://www.apple.com/apple-intelligence/">Apple Intelligence</a> at <a href="https://www.apple.com/"><strong>Apple</strong></a>. <br><br>
+    </section>
 
     <h2><a id="blogs-link" href="blog/">Blogs</a></h2>
 
@@ -434,29 +430,41 @@
 
     </div>
     <!-- ✅ END Papers -->
+  
+  <section class="about-me not-prose text-sm md:text-base text-gray-600 leading-relaxed">
+    <h2>About Me</h2>
+      <table class="imgtable about-muted"><tr><td>
+        <img style="" src="images/selfie2.jpeg" alt="photography" width="360px" height="360px"/>&nbsp;</td>
+        <td align="left">
+          <p><font>Currently a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a>, where I worked on <a href="https://www.apple.com/apple-intelligence/"><strong>Apple Intelligence</strong></a> initiatives end-to-end since 2022, from early training/serving pipelines exploration to AI feature launches.
+          Efforts spanning benchmark training infra (e.g., jax w/ TPU vs pytorch w/ GPU) in early days, production data synthesis and mixture design, post-training and model distillation experimentation for both large and small models, and building ReAct style long-horizon reinforcement learning for aligning agentic models.
+          Influenced the first batches of AI feature launches including <a href="https://support.apple.com/guide/iphone/find-the-right-words-with-writing-tools-iph6f08da1d2/ios"><strong>Writing Tools</strong></a> and <a href="https://support.apple.com/guide/iphone/use-apple-intelligence-in-messages-iph64709c5c3/ios"><strong>Reply Suggestions</strong></a>.</p>
 
-  <h2>About Me</h2>
-    <table class="imgtable about-muted"><tr><td>
-      <td align="left">
-        <p><font>Currently a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a>, where I worked on <a href="https://www.apple.com/apple-intelligence/"><strong>Apple Intelligence</strong></a> initiatives end-to-end since 2022, from early training/serving pipelines exploration to AI feature launches.
-        Efforts spanning benchmark training infra (e.g., jax w/ TPU vs pytorch w/ GPU) in early days, production data synthesis and mixture design, post-training and model distillation experimentation for both large and small models, and building ReAct style long-horizon reinforcement learning for aligning agentic models.
-        Influenced the first batches of AI feature launches including <a href="https://support.apple.com/guide/iphone/find-the-right-words-with-writing-tools-iph6f08da1d2/ios"><strong>Writing Tools</strong></a> and <a href="https://support.apple.com/guide/iphone/use-apple-intelligence-in-messages-iph64709c5c3/ios"><strong>Reply Suggestions</strong></a>.</p>
-
-        <p>Before Apple, I was a senior research engineer at <a href="https://www.salesforceairesearch.com/"><strong>Salesforce AI Research</strong></a> 
-        (2019-2022) and worked on both research and applications of sequential recommender systems, and AutoML with a 4th-place finish in the
-        <a href="https://algo.browser.qq.com/#en">CIKM 2021 AutoML competition</a>.</p>
-        
-        I received an M.S. in Computer Science from
-        <a href="https://wsu.edu/">Washington State University</a>
-        (2016–2018), where I completed a thesis on
-        <a href="https://rex.libraries.wsu.edu/esploro/outputs/graduate/Advanced-Deep-Learning-Methods-for-Image/99900525175901842">
-        <strong>advanced deep learning methods for pixel-wise prediction</strong></a>,
-        and a B.S. in Statistics from
-        <a href="http://english.hust.edu.cn/">Huazhong University of Science and Technology</a>
-        (2012–2016).
-      </td></tr>
-    </table>
-
+          <p>Before Apple, I was a senior research engineer at <a href="https://www.salesforceairesearch.com/"><strong>Salesforce AI Research</strong></a> 
+          (2019-2022) and worked on both research and applications of sequential recommender systems, and AutoML with a 4th-place finish in the
+          <a href="https://algo.browser.qq.com/#en">CIKM 2021 AutoML competition</a>.</p>
+          
+          I received an M.S. in Computer Science from
+          <a href="https://wsu.edu/">Washington State University</a>
+          (2016–2018), where I completed a thesis on
+          <a href="https://rex.libraries.wsu.edu/esploro/outputs/graduate/Advanced-Deep-Learning-Methods-for-Image/99900525175901842">
+          <strong>advanced deep learning methods for pixel-wise prediction</strong></a>,
+          and a B.S. in Statistics from
+          <a href="http://english.hust.edu.cn/">Huazhong University of Science and Technology</a>
+          (2012–2016).
+        </td></tr>
+      </table>
+    </section>
+    <font><strong>Contact:</strong></font> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
+    <a href="https://www.linkedin.com/in/YongjunChen/">[Linkedin]</a>
+    <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en">[Google Scholar]</a>
+    <script>
+      const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+      const blogLink = isLocal
+        ? "http://127.0.0.1:4000/blog/"
+        : "blog/";
+      document.write(`<a href="${blogLink}">[Blog]</a>`);
+    </script>
     <!-- <h3>DM/ML/AI Conference Reviewer</h3>
         <ul>
         <li><p>2025: COLING; 2024: TKDE, ACL, EMNLP; 2023: ACL; 2022: UAI, EMNLP, AAAI, ACML, TOIS; 2021: NAACL</p></li>
