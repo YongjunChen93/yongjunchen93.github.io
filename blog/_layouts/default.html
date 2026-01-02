@@ -14,6 +14,24 @@
 
     <!-- Jekyll compiled CSS (from assets/main.scss) -->
     <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+    </script>
+
   </head>
 
   <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 max-w-3xl mx-auto px-6">

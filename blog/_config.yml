@@ -29,9 +29,11 @@ url: ""       # GitHub Pages 会自动处理
 theme: minima
 markdown: kramdown
 highlighter: rouge
-plugins:
-  - jekyll-feed
-  - jekyll-seo-tag
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  parse_block_html: true
 
 defaults:
   - scope:

@@ -31,6 +31,18 @@ layout: default
       <span class="lang-en">{{ page.title_en }}</span>
       <span class="lang-zh" style="display:none;">{{ page.title_zh }}</span>
     </h1>
+
+    <!-- 副标题（Notes 风格，条件渲染） -->
+    {% if page.subtitle_en or page.subtitle_zh %}
+      <p class="post-subtitle mt-2">
+        {% if page.subtitle_en %}
+          <span class="lang-en">{{ page.subtitle_en }}</span>
+        {% endif %}
+        {% if page.subtitle_zh %}
+          <span class="lang-zh" style="display:none;">{{ page.subtitle_zh }}</span>
+        {% endif %}
+      </p>
+    {% endif %}
   </header>
 
   <p class="text-gray-500 text-sm mb-8">
