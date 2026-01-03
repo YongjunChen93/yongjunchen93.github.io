@@ -1,6 +1,6 @@
 ---
 layout: post
-title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems in Practice"
+title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems"
 subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from a practitioner’s perspective"
 date: 2026-1-1
 categories: [Tech]
@@ -11,16 +11,15 @@ categories: [Tech]
 
 We are at a stage where the benefits of AI are widely visible.
 
-AI progress is often framed around models: larger architectures, better objectives, and stronger benchmarks. Yet many of the most consequential challenges in practice arise outside the model itself. Assumptions made during training quietly break during inference; systems optimized for offline metrics behave unpredictably under real workloads; and AI product success depends on asymmetry feedback signals that models were never designed to observe.
-
-This post reflects on what it takes to move from models to products, considering **models, systems, and user-facing features as equally important components** of the same pipeline. Rather than focusing on algorithms in isolation, tries to examine the assumptions, constraints, and failure modes that emerge when AI systems are deployed at scale, and how these shape real AI features.
+AI progress is often framed around models: larger architectures, better objectives, and stronger benchmarks. Yet many of the most consequential challenges in practice arise outside the model itself. Assumptions made during training quietly break during inference; systems optimized for offline metrics behave unpredictably under real workloads; and AI product success depends on asymmetric feedback signals that models were never designed to observe.
 
 > Products enable iterative learning through deployment, while great products and
 > research strengthen each other. Products keep us grounded in reality and guide us
 > to solve the most impactful problems. 
 > ---- [Thinking Machines Lab](https://thinkingmachines.ai/)
 
-If we want AI to genuinely benefit people, understanding this end-to-end transition matters as much as improving model quality itself.
+
+This post reflects on what it takes to move from models to products, considering **models, systems, and user-facing features as equally important components** of the same pipeline. Rather than trying to analyze algorithms in isolation, it uses a few examples to reason about how assumptions, constraints, and failure modes show up in real systems, and how they feed into production AI features. As understanding this end-to-end transition, from models, to systems, to features matters just as much as improving model quality itself.
 
 
 ## Model Primitives
@@ -28,33 +27,28 @@ Data mixtures, computation infrastructure, and training algorithms form the core
 
 ### Data Determinism
 
-It is widely recognized that data quality dominates model performance, motivating extensive effort in cleaning, labeling, sampling, and synthesis. What is far less discussed, however, is data determinism. As models scale and training pipelines grow more complex, data ceases to be a static input, it is continuously generated, filtered, mixed, and reshaped across ETL jobs, online sampling logic, distributed training, and iterative retraining. Without careful design, small sources of nondeterminism accumulate, making training runs difficult or impossible to reproduce, especially when data mixtures are constructed online rather than frozen offline.
+Data quality is widely recognized as a dominant factor in model performance, driving extensive effort in cleaning, labeling, sampling, and synthesis. A less discussed but equally foundational element is data determinism.
 
-In practice, nondeterminism often enters through seemingly reasonable choices: using large models for data synthesis with stochastic decoding, constructing online data mixtures whose sampling depends on mutable state or worker order, or modifying curricula without a stable notion of what data the model has already seen.
+As models scale and training pipelines grow more complex, data stops being a static input. It is continuously generated, filtered, mixed, and reshaped across ETL jobs, online sampling logic, distributed training, and iterative retraining. In this setting, small sources of nondeterminism quietly accumulate, making training runs difficult to reproduce. The problem becomes especially acute when data mixtures are constructed online rather than frozen offline.
 
-Most modern frameworks provide strong controls for randomness inside model execution. JAX exposes explicit PRNG keys that scale cleanly across devices, while PyTorch relies on global and worker-level seeds. These mechanisms are effective, but they operate at a different layer. Once randomness enters through data generation or distributed input pipelines, purely **stateful** control becomes difficult to reason about or replay at system scale.
+Importantly, this nondeterminism rarely comes from obvious bugs. It often emerges from reasonable design choices: stochastic decoding during data synthesis, online mixing that depends on worker order or runtime state, or curriculum changes without a stable notion of what data the model has already seen. Modern frameworks do provide strong controls for randomness inside model execution, JAX, for example, exposes explicit PRNG keys that scale cleanly across devices, while PyTorch relies on global and worker-level seeds.But these mechanisms operate at a different layer. Once randomness enters through data generation or distributed input pipelines, purely **stateful** control becomes increasingly hard to reason about or replay at system scale.
 
-The goal is not to eliminate randomness, but to make it reproducible. In practice, this
-means that data pipelines must be able to answer a simple question:
-*Given a global step, a seed, and a configuration, how to deterministically recover the exact data the model was trained on?*
+The goal is not to eliminate randomness, but to make it reproducible. This means treating data sampling as a pure, **stateless** function of explicit inputs, such as seeds, global steps, and configuration, rather than as an emergent property of mutable pipeline state. Randomness should be derived from explicit coordinates; data sources, preprocessing steps, and mixture weights should be versioned and auditable; and curriculum changes should be intentional and traceable. For streaming or continual learning, reproducibility shifts from exact replay to controlled, well documented evolution. One simple illustration of this idea is shown below：
 
-Achieving this requires treating data sampling as a **pure, stateless function** of
-explicit inputs rather than an emergent property of mutable pipeline state. Randomness
-should be derived from explicit seeds and global coordinates; data sources,
-preprocessing steps, and mixture weights should be versioned and auditable; and any
-curriculum changes should be intentional and traceable. For streaming or continual
-learning, reproducibility shifts from exact replay to controlled, well-documented
-evolution.
+<details> 
+<strong>illustrative stateless sampling</strong>
 
-A minimal illustration is:
+A minimal illustration of stateless sampling is:
+
 ```python
 def sample_index(seed, epoch, global_step, dataset_size):
     h = hash(f"{seed}-{epoch}-{global_step}")
     return h % dataset_size
 ```
 
-While any hashing-based scheme has limitations, the essential property is that sampling
-depends only on explicit inputs, not mutable runtime state. This **stateless control**, making resuming, debugging, and comparing runs feasible even under large-scale distributed training.
+Any hashing-based scheme has limitations, but the essential property is that sampling depends only on explicit inputs, not mutable runtime state. This form of **stateless control** makes resuming, debugging, and comparing runs feasible even under large-scale distributed training.
+
+</details>
 
 
 ### Computation Infrastructure
@@ -72,7 +66,7 @@ expensive, and sometimes infeasible.
 
 Crucially, parallelism decisions are not merely about efficiency. They determine whether training runs can be debugged and reasoned about; How compute scales across training and inference; Whether rollouts and evaluation pipelines can scale with the model; Whether reinforcement learning loops remain tractable at all.
 
-In practice, computation infrastructure defines the *shape* of the system long
+Once systems scale, computation infrastructure defines the *shape* of the system long
 before it defines its speed.
 
 ***Parallelism Starts from Communication***
@@ -90,7 +84,7 @@ Conceptually, any parallel system can be decomposed into three atoms:
   class="zoomable"
 />
 
-An minimal atom relationships is illustrated in above figure.
+A minimal atom relationships is illustrated in above figure.
 
 <details>
 <strong>toy demo: devices, channels, and collective communication</strong>
@@ -196,14 +190,14 @@ jax.debug.visualize_array_sharding(
 
 While computation infrastructure defines the shape of a system, training architecture determines how that shape evolves. Seemingly local architectural choices often have systemic consequences, governing parameter movement, stability, and their interaction with infrastructure constraints.
 
-In practice, a few design patterns repeatedly become the standard choices.
+Over time, a few design patterns repeatedly become standard choices.
 
 ***Low-Rank Adaptation (LoRA)***: Tuning a base model is often costly and difficult to scale when serving many clients. LoRA introduces trainable low-rank adapters alongside frozen base parameters ([Hu et al. 2021](https://arxiv.org/abs/2106.09685)). Rather than a shortcut to full fine-tuning, LoRA functions as an *auxiliary structure* attached to the model. Viewed this way, LoRA restricts learning to a small set of adapter parameters, keeping changes localized and the base model stable (e.g., [LoRA as programs](https://kevinlu.ai/loras-as-programs)).
 This framing becomes increasingly important as models are reused, composed, and
 adapted across tasks and products.
 
 <details>
-<strong>side notes on LoRA:</strong> In LoRA, the original weight matrix $W \in \real^{d_{out}\times d_{in}}$ is kept frozen, and updates are expressed through a low-rank decomposition:
+<strong>side notes on LoRA:</strong> In LoRA, the original weight matrix $W \in \mathbb{R}^{d_{out}\times d_{in}}$ is kept frozen, and updates are expressed through a low-rank decomposition:
 
 <div class="lang-en" markdown="0"> 
 
@@ -264,7 +258,7 @@ for each key_value_block:
 </details>
 
 ***Mixture of Experts (MoE)***: 
-As Transformer models scale, most computation becomes dominated by feed-forward networks (FFNs), which motivated Mixture-of-Experts (MoE) as a way to scale capacity without paying the full dense compute cost. MoE architectures ([Du et al. 2021](https://arxiv.org/abs/2112.06905), [Zoph et al. 2022](https://arxiv.org/abs/2202.08906)) are attractive primarily for scaling: by activating only a subset of experts per token, they allow model capacity to grow while keeping per-token compute roughly constant.In practice, however, MoE is less a local modeling trick than a system-level choice, routing, load balancing, and expert utilization tightly couple data, optimization, and infrastructure behavior. Imbalances formed during training often surface later as unstable rollouts, poor utilization, or degraded reinforcement learning performance, making MoE success depend on careful co-design across data, model, and infrastructure rather than architecture alone.
+As Transformer models scale, most computation becomes dominated by feed-forward networks (FFNs), which motivated Mixture-of-Experts (MoE) as a way to scale capacity without paying the full dense compute cost. MoE architectures ([Du et al. 2021](https://arxiv.org/abs/2112.06905), [Zoph et al. 2022](https://arxiv.org/abs/2202.08906)) are attractive primarily for scaling: by activating only a subset of experts per token, they allow model capacity to grow while keeping per-token compute roughly constant. At system level, however, MoE is less a local modeling trick than a system-level choice, routing, load balancing, and expert utilization tightly couple data, optimization, and infrastructure behavior. Imbalances formed during training often surface later as unstable rollouts, poor utilization, or degraded reinforcement learning performance, making MoE success depend on careful co-design across data, model, and infrastructure rather than architecture alone.
 
 <details>
 <strong>side notes: common techniques for stabilizing MoE</strong>
@@ -305,7 +299,7 @@ softmax-based routing under low-precision training.
 
 </details>
 
-## From AI Models to AI Systems
+## From Models to Systems
 
 We don’t call a model failed because it performs poorly offline; we call it failed when it is deployed. After deployment, failures often appear around inference constraints, agentic
 interactions, learning dynamics, and numerical stability. These are not exhaustive,
@@ -392,22 +386,146 @@ reasoning-heavy settings where only comparative signals are reliable. Following 
 In fully agentic settings, with environment interaction and long-horizon feedback,
 these control issues become at least as important as innovations in reinforcement
 learning algorithms. Recent work such as [rStar2-Agent](https://arxiv.org/abs/2508.20722) makes this explicit: ***progress depends less on new reinforcement learning objectives than on engineering mechanisms that make
-interaction, rollout, and learning stable and scalable***. In practice, reinforcement learning for agentic LLMs is best understood as a set of tools for managing variance, normalization, and forgetting, rather than as a single unified algorithm. The rapid maturation of this direction is further reflected in a recent survey by [Zhang et al. 2025](https://arxiv.org/pdf/2509.02547), which reviews over five hundred works on agentic reinforcement learning for LLMs.
-
+interaction, rollout, and learning stable and scalable***. From an engineering perspective, reinforcement learning for agentic LLMs is best understood as a set of tools for managing variance, normalization, and forgetting, rather than as a single unified algorithm. The rapid maturation of this direction is further reflected in a recent survey by [Zhang et al. 2025](https://arxiv.org/pdf/2509.02547), which reviews over five hundred works on agentic reinforcement learning for LLMs.
 
 ### Numerical Stability
 
+Numerical instability in large-scale AI systems often arises from a small set of **high-frequency numerical operators** whose numerical behavior degrades under low precision, approximation, and scale. These issues typically accumulate quietly and later surface as hard-to-diagnose regressions.
+
+One particularly common source is **exponentiation over log-space quantities**, which
+appears throughout modern systems in softmax, attention, and probabilistic objectives.
+Softmax is therefore computed in its numerically stable form as:
+
+<div class="lang-en" markdown="0">
+$$
+\begin{aligned}
+\mathrm{softmax}(x_i)
+&= \frac{\exp\!\left(x_i - \max_j x_j\right)}
+        {\sum_k \exp\!\left(x_k - \max_j x_j\right)}
+\end{aligned}
+$$
+</div>
+
+Standard safeguards such as logit shifting and numerically stable softmax
+implementations are therefore not optimizations, but baseline requirements for
+reliable systems. Related guardrails, such as **z-loss**, are often introduced to
+explicitly penalize unbounded logit growth, an effect that becomes especially important
+in high-entropy regimes and in MoE models, where unstable logits can directly
+destabilize routing decisions.
+
+Closely related failures arise when **logarithms, ratios, and exponentiation interact under low precision arithmetic**. As probabilities approach zero, operations like $\log(p)$
+become unstable; when combined with exponentiation, as in ratio-based objectives such
+as PPO, small numerical errors can be amplified into biased gradients or silent metric
+drift. In these settings, stability depends less on heuristics like clipping and more
+on controlling how log-probabilities enter the exponential regime.
+
+Precision choice further shapes how these effects manifest. **BF16** has become the
+de facto choice for large-scale training due to its wider exponent range, but frequent
+switching between training and rollout phases can introduce rounding-induced
+nondeterminism ([He et al. 2025](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)).
+While **FP16** can reduce rounding noise ([Qi et al. 2025](https://arxiv.org/pdf/2510.26788)),
+it interacts poorly with exponentiation-heavy approximations ([Schulman 2020](http://joschu.net/blog/kl-approx.html)), which are commonly used in alignment
+and reinforcement learning. For large-scale training, **no single precision format is universally safe**. Stability emerges from how precision, approximation, and objectives interact. The details below show how these issues arise empirically:
+
+<details>
+<strong>numerical details: PPO ratios and clipping</strong>
+
+In PPO-style objectives, policy updates depend on the ratio between the current and
+reference policies,
+
+<div class="lang-en" markdown="0">
+$$
+\begin{aligned}
+r
+&= \frac{\pi_\theta(a \mid s)}{\pi_{\theta_{\text{old}}}(a \mid s)}
+= \exp\!\left(
+    \log \pi_\theta(a \mid s)
+    - \log \pi_{\theta_{\text{old}}}(a \mid s)
+\right)
+\end{aligned}
+$$
+</div>
+
+which reintroduces exponentiation over log-probability differences. PPO stabilizes
+updates using ratio clipping,
+
+<div class="lang-en" markdown="0">
+$$
+\begin{aligned}
+\mathcal{L}_{\text{PPO}}
+&= - \min\!\Big(
+    r \, A,\;
+    \mathrm{clip}(r,\, 1-\epsilon,\, 1+\epsilon)\, A
+\Big)
+\end{aligned}
+$$
+</div>
+
+but clipping introduces gradient discontinuities and bias when log-probability
+differences are large. Empirically, PPO stability depends less on the clipping
+heuristic itself and more on controlling the scale at which log-probabilities enter
+the exponential regime.
+
+<strong>numerical details: KL approximations and precision</strong>
+
+Exponentiation-heavy KL approximations further amplify numerical sensitivity. A common
+example is the K3 approximation,
+
+<div class="lang-en" markdown="0">
+$$
+\begin{aligned}
+KL \approx r - 1 - \log r,
+\qquad r = \exp(\log r)
+\end{aligned}
+$$
+</div>
+
+where the exponential magnifies differences between target and reference policies.
+Under FP16, large ratios can underflow to zero or overflow to infinity, and higher-order
+approximations further magnify the error. As a result, combinations such as **FP16 with
+K3-style KL estimation** will become a source of numerical instability.
+
+</details>
+
+Numerical stability is therefore system-level property, not an isolated
+numerical detail. 
+
+## From Systems to Products
 
 ### Distillation
 
-## Buidling AI Features
+In reality, not everyone, or every product can afford a frontier-scale model. Cost, latency, reliability, and privacy constraints often make large models impractical to serve directly. Distillation offers a practical way forward: keep the behavior we care about, while running a much smaller, cheaper, and more predictable model in production.
+
+At its core, knowledge distillation aligns the student’s output distribution with that of the teacher, most commonly through a KL-divergence objective. Note that the *direction* of KL matters in generative models ([Eric's post](https://blog.evjang.com/2016/08/variational-bayes.html), [Gu et al. 2025](https://thinkingmachines.ai/blog/on-policy-distillation/)). Minimizing $KL(p\|\|q)$ (**forward KL**) encourages **mode-covering** behavior, pushing student to match all modes of the teacher distribution. In contrast, minimizing $KL(q\|\|p)$ (**reverse KL**) is mode-seeking, concentrating probability mass on the teacher’s most likely outputs. In deployment settings, the reverse KL often produces sharper and more decisive student behavior, which is desirable when distillation targets a production model rather than a generative oracle. 
+
+Most traditional distillation pipelines are off-policy, relying on static datasets or trajectories generated by earlier teacher checkpoints. As the student evolves, this can introduce distribution mismatch and gradual forgetting. **On-Policy Distillation**([Gu et al. 2025](https://thinkingmachines.ai/blog/on-policy-distillation/)) addresses this by training the student on trajectories generated under the current teacher policy, ensuring that learning remains aligned with the behavior being distilled and reducing drift over time.
+
+Distillation remains one of the most practical ways to turn frontier models into widely usable systems. However, effective distillation is rarely a purely algorithmic choice. It depends on system level decisions: how teachers are selected, how trajectories are generated, how frequently policies are refreshed, and how losses interact with serving constraints.
+
+### Building AI Features
+
+AI products do not fail because models are weak; they fail because the gap between models and users is underestimated. Closing this gap typically requires substantial **post-training** effort to align what models optimize with how people actually experience and judge a product.
+
+When training models, we optimize **deterministic signals** such as loss, reward, and accuracy.
+When building features, we confront **non-deterministic user experience**, observed only through imperfect proxies like usefulness, trust, and friction.
+In training, failure is reversible; in production, a single visible failure can permanently erode trust.
+Managing this asymmetry is one of the core challenge of building AI features.
+
+Beyond the model itself, effective features rely on **context engineering and tool management**. Models do not inherently know what matters to a specific user, task, or moment; context must be selected, structured, and constrained. Tool use introduces another layer of risk: deciding *when* the model should act, *which* tools it can access, and *how* failures are handled often dominates user's visible reliability. Most product failures arise not from model quality, but from poorly scoped context or brittle tool orchestration.
+
+AI features are also shaped by **human-facing constraints** for high quality. UI design determines how uncertainty and errors are perceived, while system constraints such as latency, token limits, input/output modality bound what interactions are feasible. For products meant to benefit broad audiences, additional constraints emerge: language coverage, cultural norms, accessibility, and regional expectations. Users do not interact with loss functions; they interact with behavior. As a result, feature design prioritizes predictability, graceful degradation, and avoiding surprising failures over marginal gains in average model quality.
+
+**Evaluation and risk** therefore look fundamentally different at the feature level. Some metrics such as latency, cost, task success are quantifiable, but the most important signals are subjective: Is this helpful? Is it annoying? Does this feel like my style? Offline benchmarks rarely capture these dimensions. Unlike models, features are judged continuously in real use, and the trust, once lost, is difficult to recover.
+
+Even when AI products increasingly serve other entities, the core challenge remains: models optimize objectives, but products depend on stable interfaces and adaptive behavior shaped by subtle, implicit feedback. Whether the user is a person or another system, successful AI features treat models, systems, and user-facing design as equally important components of the same pipeline.
+
 
 </div>
 
 
 <footer class="mt-16 pt-6 border-t border-gray-200 dark:border-gray-700
-               text-sm text-black-500 dark:text-black-400">
+               text-sm text-black dark:text-black">
   <p>
-    Notes: Post is actively revised. AI helps with English editing. Credits goes to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
+    Notes: Post is actively revised. AI helps with English editing. Credits go to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
   </p>
 </footer>
