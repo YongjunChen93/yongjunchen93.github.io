@@ -1,6 +1,6 @@
 ---
 layout: post
-title_en: "From Model Primitives to Production Features: Notes on Dissecting AI Systems in Practice"
+title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems in Practice"
 subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from an AI practionaoer  view"
 date: 2026-1-1
 categories: [Tech]
