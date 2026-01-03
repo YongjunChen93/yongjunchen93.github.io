@@ -408,6 +408,6 @@ interaction, rollout, and learning stable and scalable***. In practice, reinforc
 <footer class="mt-16 pt-6 border-t border-gray-200 dark:border-gray-700
                text-sm text-black-500 dark:text-black-400">
   <p>
-    Notes: Post is actively revised. AI helps with English editing. Credits goes to the broader tech community for the learning and inspiration behind these notes. Notes are written for memorization and reflection, not for tracking SOTA. Please feel free to reach out with corrections or citation suggestions.
+    Notes: Post is actively revised. AI helps with English editing. Credits goes to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
   </p>
 </footer>
