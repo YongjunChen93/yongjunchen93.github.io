@@ -68,7 +68,7 @@ As many pioneers have emphasized, computation is not just a resource but also a 
 
 Choices around hardware, parallelism strategies, and system architecture determine
 what is possible downstream. Once these foundations are set, changing them becomes
-expensive—and sometimes infeasible.
+expensive, and sometimes infeasible.
 
 Crucially, parallelism decisions are not merely about efficiency. They determine whether training runs can be debugged and reasoned about; How compute scales across training and inference; Whether rollouts and evaluation pipelines can scale with the model; Whether reinforcement learning loops remain tractable at all.
 
@@ -363,7 +363,7 @@ often over long horizons, with memory and feedback loops.
 Compared to traditional inference, agentic models introduce a tight reasoning, planning, and action loop, persistent state across interactions, and deep integration with external tools
 such as search, calculators, and execution engines. These properties make them suitable
 for real-world workflows involving planning, automation, and multi-step decision
-making—but they also introduce new challenges in reliability, controllability, and
+making, but they also introduce new challenges in reliability, controllability, and
 long-horizon behavior.
 
 
@@ -386,9 +386,7 @@ with a learned value function for variance reduction, but remains sensitive to a
 reward scale and reward-model drift; [**DPO**](https://arxiv.org/abs/2305.18290) removes explicit environment interaction
 and value estimation by optimizing directly against preference comparisons under a
 fixed reference, trading adaptability for simplicity when feedback is static; and
-[**GRPO**](https://arxiv.org/abs/2402.03300), in contrast, eliminates the value function and replaces absolute rewards with
-within-group relative comparisons, making updates less sensitive to reward magnitude
-and prompt-dependent variance—particularly effective in multi-sample,
+[**GRPO**](https://arxiv.org/abs/2402.03300), in contrast, eliminates the value function and replaces absolute rewards with within-group relative comparisons, making updates less sensitive to reward magnitude and prompt-dependent variance, particularly effective in multi-sample,
 reasoning-heavy settings where only comparative signals are reliable. Following the success of [DeepSeek-R1](https://arxiv.org/abs/2501.12948), which validated GRPO-style optimization at scale, a growing body of follow-up work has built on the same core idea ([Liu et al. 2025](https://arxiv.org/pdf/2503.20783)).
 
 In fully agentic settings, with environment interaction and long-horizon feedback,
