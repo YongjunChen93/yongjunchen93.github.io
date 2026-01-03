@@ -1,7 +1,7 @@
 ---
 layout: post
 title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems in Practice"
-subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from an AI practionaoer  view"
+subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from a practitioner’s perspective"
 date: 2026-1-1
 categories: [Tech]
 ---
@@ -400,7 +400,7 @@ interaction, rollout, and learning stable and scalable***. In practice, reinforc
 
 ### Distillation
 
-## AI Features
+## Buidling AI Features
 
 </div>
 
