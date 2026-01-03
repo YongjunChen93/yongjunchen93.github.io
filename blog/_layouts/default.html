@@ -6,7 +6,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- SEO & feed (jekyll-seo-tag will render <title> based on page.title) -->
-    {% seo %}
+    {% seo title=false %}
+    <title>{{ page.seo_title | default: page.title_en | escape }} | {{ site.title }}</title>
     {% feed_meta %}
 
     <!-- Tailwind CDN -->
