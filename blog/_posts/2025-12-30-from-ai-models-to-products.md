@@ -355,7 +355,7 @@ While inference focuses on generating a response for a single request, agentic m
 extend model behavior across steps and interactions. With the emergence of [Chain-of-Thought](https://arxiv.org/abs/2201.11903), language models began to exhibit explicit reasoning behavior rather than acting as purely passive sequence predictors. The [ReAct](https://arxiv.org/abs/2210.03629) (Reasoning and Acting) was one of the early works to formalize this shift by interleaving reasoning traces with action decisions, allowing models to reason and act in a loop instead of producing a single text continuation.
 
 This marked a paradigm shift in how models are used. Rather than simply responding
-to prompts, models began deciding what to do next—invoking tools, calling APIs, and
+to prompts, models began deciding what to do next, invoking tools, calling APIs, and
 interacting with environments as part of their output. In agentic settings, a model
 becomes an autonomous component that reasons, plans, and acts across multiple steps,
 often over long horizons, with memory and feedback loops.
@@ -380,18 +380,20 @@ delayed rewards through sampled trajectories. As systems scale, purely on-policy
 learning becomes impractical, and **importance sampling**, typically with respect to a
 reference or behavior policy, enables reuse of experience while correcting for
 distribution mismatch. Building on these foundations, policy optimization methods for
-agentic LLMs primarily differ in how they constrain policy updates and normalize learning signals at scale. **PPO** stabilizes training by explicitly restricting policy
+agentic LLMs primarily differ in how they constrain policy updates and normalize learning signals at scale. [**PPO**](https://arxiv.org/abs/1707.06347) stabilizes training by explicitly restricting policy
 movement through ratio clipping or KL penalties relative to a reference policy, together
 with a learned value function for variance reduction, but remains sensitive to absolute
-reward scale and reward-model drift; **DPO** removes explicit environment interaction
+reward scale and reward-model drift; [**DPO**](https://arxiv.org/abs/2305.18290) removes explicit environment interaction
 and value estimation by optimizing directly against preference comparisons under a
 fixed reference, trading adaptability for simplicity when feedback is static; and
-**GRPO**, in contrast, eliminates the value function and replaces absolute rewards with
+[**GRPO**](https://arxiv.org/abs/2402.03300), in contrast, eliminates the value function and replaces absolute rewards with
 within-group relative comparisons, making updates less sensitive to reward magnitude
 and prompt-dependent variance—particularly effective in multi-sample,
 reasoning-heavy settings where only comparative signals are reliable. Following the success of [DeepSeek-R1](https://arxiv.org/abs/2501.12948), which validated GRPO-style optimization at scale, a growing body of follow-up work has built on the same core idea ([Liu et al. 2025](https://arxiv.org/pdf/2503.20783)).
 
-In fully agentic settings, with environment interaction and long-horizon feedback, these control issues become first-order concerns rather than implementation details. Recent work uch as [**rStar2-Agent**](https://arxiv.org/abs/2508.20722) makes this explicit: ***progress depends less on new reinforcement learning objectives than on engineering mechanisms that make
+In fully agentic settings, with environment interaction and long-horizon feedback,
+these control issues become at least as important as innovations in reinforcement
+learning algorithms. Recent work such as [rStar2-Agent](https://arxiv.org/abs/2508.20722) makes this explicit: ***progress depends less on new reinforcement learning objectives than on engineering mechanisms that make
 interaction, rollout, and learning stable and scalable***. In practice, reinforcement learning for agentic LLMs is best understood as a set of tools for managing variance, normalization, and forgetting, rather than as a single unified algorithm. The rapid maturation of this direction is further reflected in a recent survey by [Zhang et al. 2025](https://arxiv.org/pdf/2509.02547), which reviews over five hundred works on agentic reinforcement learning for LLMs.
 
 
