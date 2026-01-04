@@ -33,22 +33,7 @@ As models scale and training pipelines grow more complex, data stops being a sta
 
 Importantly, this nondeterminism rarely comes from obvious bugs. It often emerges from reasonable design choices: stochastic decoding during data synthesis, online mixing that depends on worker order or runtime state, or curriculum changes without a stable notion of what data the model has already seen. Modern frameworks do provide strong controls for randomness inside model execution, JAX, for example, exposes explicit PRNG keys that scale cleanly across devices, while PyTorch relies on global and worker-level seeds.But these mechanisms operate at a different layer. Once randomness enters through data generation or distributed input pipelines, purely **stateful** control becomes increasingly hard to reason about or replay at system scale.
 
-The goal is not to eliminate randomness, but to make it reproducible. This means treating data sampling as a pure, **stateless** function of explicit inputs, such as seeds, global steps, and configuration, rather than as an emergent property of mutable pipeline state. Randomness should be derived from explicit coordinates; data sources, preprocessing steps, and mixture weights should be versioned and auditable; and curriculum changes should be intentional and traceable. For streaming or continual learning, reproducibility shifts from exact replay to controlled, well documented evolution. One simple illustration of this idea is shown below：
-
-<details> 
-<strong>illustrative stateless sampling</strong>
-
-A minimal illustration of stateless sampling is:
-
-```python
-def sample_index(seed, epoch, global_step, dataset_size):
-    h = hash(f"{seed}-{epoch}-{global_step}")
-    return h % dataset_size
-```
-
-Any hashing-based scheme has limitations, but the essential property is that sampling depends only on explicit inputs, not mutable runtime state. This form of **stateless control** makes resuming, debugging, and comparing runs feasible even under large-scale distributed training.
-
-</details>
+The goal is not to eliminate randomness, but to make it reproducible. This means treating data sampling as a pure, **stateless** function of explicit inputs, such as seeds, global steps, and configuration, rather than as an emergent property of mutable pipeline state. Randomness should be derived from explicit coordinates; data sources, preprocessing steps, and mixture weights should be versioned and auditable; and curriculum changes should be intentional and traceable. For streaming or continual learning, reproducibility shifts from exact replay to controlled, well documented evolution. 
 
 
 ### Computation Infrastructure
@@ -86,105 +71,9 @@ Conceptually, any parallel system can be decomposed into three atoms:
 
 A minimal atom relationships is illustrated in above figure.
 
-<details>
-<strong>toy demo: devices, channels, and collective communication</strong>
-
-```python
-  # device.py
-  class Device:
-      def __init__(self, device_id, data):
-          self.id = device_id
-          self.data = data
-
-  # channel.py
-  from queue import Queue
-
-  class Channel:
-      def __init__(self):
-          self._queue = Queue()
-
-      def send(self, x):
-          self._queue.put(x)
-
-      def receive(self):
-          return self._queue.get()
-
-  # communicator.py
-  class Communicator:
-      """
-      A minimal abstraction over collective communication semantics.
-
-      The goal is to make parallelism decisions explicit and inspectable.
-      """
-      def __init__(self, devices):
-          self.devices = devices
-
-      def allreduce(self):
-          total = sum(d.data for d in self.devices)
-          for d in self.devices:
-              d.data = total
-
-  # run_demo.py
-  devices = [Device(i, i + 1) for i in range(4)]
-  comm = Communicator(devices)
-
-  comm.allreduce()
-  print([d.data for d in devices])  # [10, 10, 10, 10]
-```
-
-</details>
-
 ***From Communication Atoms to Parallelism Strategies***
 
-Once these abstractions are in place,  parallelism strategies (such as DDP, FSDP, TP, Pipeline Parallelism, Export Parallelism, and hybrid solutions) naturally occupy the layer above. Many excellent resources document options and trade-offs in depth. (e.g., [Weng, 2021](https://lilianweng.github.io/posts/2021-09-25-train-large/) and [Stanford CS336](https://stanford-cs336.github.io/spring2025/)). At this level, parallelism is no longer a collection of tricks. It is a structured mapping from tensors to devices, with communication patterns determined by that mapping.
-
-While strategies can become arbitrarily complex, starting from simpler designs tends to make scaling smoother. As a starting point, a small script illustrating tensor parallelism is shown below.
-<details>
-<strong>tensor parallelism visualization</strong>
-
-```python
-# Simulate multiple devices on CPU
-import os
-import jax
-from jax.sharding import NamedSharding
-from jax.sharding import PartitionSpec as P
-
-os.environ["XLA_FLAGS"] = "--xla_force_host_platform_device_count=8"
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
-
-print(f"Available devices: {jax.local_devices()}")
-
-# --------------------------------------------------
-# Tensor Parallelism
-# --------------------------------------------------
-# Intuition:
-#   - Linear layer weights are partitioned across devices
-#   - Communication is required to combine partial results
-#
-# This mirrors the Megatron-style column / row sharding pattern.
-
-mesh = jax.make_mesh((8,), ("tp",))
-
-# First linear layer: column-wise sharding
-w1 = jax.random.normal(jax.random.key(0), (88, 88))
-jax.debug.visualize_array_sharding(
-    jax.device_put(w1, NamedSharding(mesh, P(None, "tp")))
-)
-
-# Second linear layer: row-wise sharding
-w2 = jax.random.normal(jax.random.key(1), (88, 88))
-jax.debug.visualize_array_sharding(
-    jax.device_put(w2, NamedSharding(mesh, P("tp", None)))
-)
-
-# Alternative: fully sharded tensor (both dims)
-w3 = jax.random.normal(jax.random.key(2), (88, 88))
-jax.debug.visualize_array_sharding(
-    jax.device_put(w3, NamedSharding(mesh, P("tp")))
-)
-```
-
-</details>
+Once these abstractions are in place,  parallelism strategies (such as DDP, FSDP, TP, Pipeline Parallelism, Export Parallelism, and hybrid solutions) naturally occupy the layer above. Many excellent resources document options and trade-offs in depth. (e.g., [Weng, 2021](https://lilianweng.github.io/posts/2021-09-25-train-large/) and [Stanford CS336](https://stanford-cs336.github.io/spring2025/)). At this level, parallelism is no longer a collection of tricks. It is a structured mapping from tensors to devices, with communication patterns determined by that mapping. While strategies can become arbitrarily complex, starting from simpler designs tends to make scaling smoother. 
 
 ### Training Architecture
 
@@ -196,108 +85,14 @@ Over time, a few design patterns repeatedly become standard choices.
 This framing becomes increasingly important as models are reused, composed, and
 adapted across tasks and products.
 
-<details>
-<strong>side notes on LoRA:</strong> In LoRA, the original weight matrix $W \in \mathbb{R}^{d_{out}\times d_{in}}$ is kept frozen, and updates are expressed through a low-rank decomposition:
-
-<div class="lang-en" markdown="0"> 
-
-$$ \begin{aligned} 
-W' &= W + \Delta W \\ 
-\Delta W &= B A \\ 
-A &\in \mathbb{R}^{r \times d_{\text{in}}}, \quad B \in \mathbb{R}^{d_{\text{out}} \times r}, \quad r \ll \min(d_{\text{in}}, d_{\text{out}}) \end{aligned} $$
-
-</div>
-
-</details>
 
 ***Memory-Aware Attention***： Out-of-memory (OOM) issues are often the first constraint encountered when running AI models. FlashAttention ([Dao et al. 2022](https://arxiv.org/abs/2205.14135)) and its successors ([v2](https://arxiv.org/abs/2307.08691), [v3](https://arxiv.org/abs/2407.08608)) are frequently framed as performance optimizations. Their deeper impact is architectural. Online softmax computation, originally motivated by numerical stability, combined with careful tiling and backward recomputation, reshapes the memory–compute trade-off. These techniques together enable attention patterns and context lengths that were previously
 infeasible under conventional memory layouts.
 
-<details>
-<strong>abstraction</strong>
-
-The key insight is not faster kernels, but a different memory model: attention is computed block by block, normalized online, and recomputed in backward passes instead of being materialized.
-
-```python
-# Forward pass: block-wise attention with online softmax
-for each query_block:
-    running_max = -inf
-    running_sum = 0
-    output_accumulator = 0
-
-    for each key_value_block:
-        scores = compute_attention_scores(query_block, key_value_block)
-
-        # online softmax update
-        new_max = max(running_max, max(scores))
-        rescale = exp(running_max - new_max)
-
-        probs = exp(scores - new_max)
-        running_sum = running_sum * rescale + sum(probs)
-        output_accumulator = (
-            output_accumulator * rescale
-            + probs @ value_block
-        )
-
-        running_max = new_max
-
-    output = output_accumulator / running_sum
-    save_minimal_stats(running_max, running_sum)
-
-# Backward pass: recompute attention blocks instead of storing them
-for each key_value_block:
-    for each query_block:
-        load_minimal_stats(query_block)
-
-        scores = recompute_attention_scores(query_block, key_value_block)
-        probs = exp(scores - running_max) / running_sum
-
-        accumulate_gradients_for_QKV(probs)
-
-```
-</details>
 
 ***Mixture of Experts (MoE)***: 
 As Transformer models scale, most computation becomes dominated by feed-forward networks (FFNs), which motivated Mixture-of-Experts (MoE) as a way to scale capacity without paying the full dense compute cost. MoE architectures ([Du et al. 2021](https://arxiv.org/abs/2112.06905), [Zoph et al. 2022](https://arxiv.org/abs/2202.08906)) are attractive primarily for scaling: by activating only a subset of experts per token, they allow model capacity to grow while keeping per-token compute roughly constant. At system level, however, MoE is less a local modeling trick than a system-level choice, routing, load balancing, and expert utilization tightly couple data, optimization, and infrastructure behavior. Imbalances formed during training often surface later as unstable rollouts, poor utilization, or degraded reinforcement learning performance, making MoE success depend on careful co-design across data, model, and infrastructure rather than architecture alone.
 
-<details>
-<strong>side notes: common techniques for stabilizing MoE</strong>
-
-**Load balancing loss.**  
-Introduced in [GLaM](https://arxiv.org/pdf/2006.16668), load balancing losses encourage uniform expert utilization by
-penalizing skewed routing decisions across experts:
-
-<div class="lang-en" markdown="0">
-$$
-\begin{aligned}
-\mathcal{L}_{\text{balance}}
-&= N \sum_{i=1}^{N} f_i \cdot p_i
-\end{aligned}
-$$
-</div>
-
-where $N$ is the number of experts, $f\_i$ denotes the fraction of tokens routed to
-expert $i$, and $p\_i$ is the average routing probability assigned to that expert.
-This term discourages expert collapse and promotes balanced utilization during training.
-
-**Z-loss for router stability.**  
-Introduced in [ST-MoE](https://arxiv.org/pdf/2202.08906), the z-loss penalizes large router logits to improve numerical
-stability and softmax behavior:
-
-<div class="lang-en" markdown="0">
-$$
-\begin{aligned}
-\mathcal{L}_{\text{z}}
-&= \log \sum_{j} \exp(z_j)
-\end{aligned}
-$$
-</div>
-
-where $z\_j$ are the pre-softmax router logits. Compared to simple $L2$ penalties, z-loss
-regularizes the *joint scale* of logits, which is particularly effective for stabilizing
-softmax-based routing under low-precision training.
-
-</details>
 
 ## From Models to Systems
 
@@ -312,36 +107,7 @@ In autoregressive generation, attention is often the first place where inference
 
 Beyond memory, decoding itself becomes a systems problem. **Speculative decoding** ([Chen et al. 2023](https://arxiv.org/abs/2302.01318), [Leviathan et al. 2023](https://arxiv.org/pdf/2211.17192)) reduces end-to-end latency by letting cheap draft models propose multiple tokens that
 expensive target models verify in parallel, without changing output distributions. Systems such as [DeepSeek V3](https://arxiv.org/abs/2412.19437) use multi-token prediction to produce stronger drafts for speculative decoding, while newer variants move toward **speculative
-editing** (e.g., [EfficientEdit](https://arxiv.org/pdf/2506.02780)), where only edited spans are regenerated and unchanged context is reused. At the extreme, even an **n-gram** model can serve as the draft, reducing the problem to validating local edits rather than regenerating the full sequence. A toy example is shown below.
-
-<details>
-<strong>illustration of speculative editing</strong>
-
-```python
-# prompt: original context
-# draft: cheap proposal (e.g., n-gram or small model, fast to generate)
-# target: large LLM
-
-# 1. Propose edits with a cheap draft
-draft = propose(prompt)
-
-# 2. Verify draft token-by-token with the target model
-logits = target(prompt + draft)
-accepted = []
-for i, token in enumerate(draft):
-    if argmax(logits[i]) == token:
-        accepted.append(token)
-    else:
-        break
-
-# 3. Commit accepted prefix
-text = prompt + decode(accepted)
-
-# 4. Continue with normal decoding if needed
-text += decode_with_target(target, text)
-```
-</details>
-
+editing** (e.g., [EfficientEdit](https://arxiv.org/pdf/2506.02780)), where only edited spans are regenerated and unchanged context is reused. At the extreme, even an **n-gram** model can serve as the draft, reducing the problem to validating local edits rather than regenerating the full sequence. 
 
 ### Agentic Systems
 
@@ -381,11 +147,11 @@ reward scale and reward-model drift; [**DPO**](https://arxiv.org/abs/2305.18290)
 and value estimation by optimizing directly against preference comparisons under a
 fixed reference, trading adaptability for simplicity when feedback is static; and
 [**GRPO**](https://arxiv.org/abs/2402.03300), in contrast, eliminates the value function and replaces absolute rewards with within-group relative comparisons, making updates less sensitive to reward magnitude and prompt-dependent variance, particularly effective in multi-sample,
-reasoning-heavy settings where only comparative signals are reliable. Following the success of [DeepSeek-R1](https://arxiv.org/abs/2501.12948), which validated GRPO-style optimization at scale, a growing body of follow-up work has built on the same core idea ([Liu et al. 2025](https://arxiv.org/pdf/2503.20783)).
+reasoning-heavy settings where only comparative signals are reliable. Following the success of [DeepSeek-R1](https://arxiv.org/abs/2501.12948), which validated GRPO-style optimization at scale, a growing body of follow-up work has built on the same core idea ([Liu et al. 2025](https://arxiv.org/pdf/2503.20783), [Zheng et al. 2025](https://arxiv.org/pdf/2507.18071)).
 
 In fully agentic settings, with environment interaction and long-horizon feedback,
 these control issues become at least as important as innovations in reinforcement
-learning algorithms. Recent work such as [rStar2-Agent](https://arxiv.org/abs/2508.20722) makes this explicit: ***progress depends less on new reinforcement learning objectives than on engineering mechanisms that make
+learning algorithms. Recent work such as [rStar2-Agent](https://arxiv.org/abs/2508.20722) makes this explicit: ***progress not only depends on new reinforcement learning objectives but also on engineering mechanisms that make
 interaction, rollout, and learning stable and scalable***. From an engineering perspective, reinforcement learning for agentic LLMs is best understood as a set of tools for managing variance, normalization, and forgetting, rather than as a single unified algorithm. The rapid maturation of this direction is further reflected in a recent survey by [Zhang et al. 2025](https://arxiv.org/pdf/2509.02547), which reviews over five hundred works on agentic reinforcement learning for LLMs.
 
 ### Numerical Stability
@@ -424,71 +190,9 @@ de facto choice for large-scale training due to its wider exponent range, but fr
 switching between training and rollout phases can introduce rounding-induced
 nondeterminism ([He et al. 2025](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)).
 While **FP16** can reduce rounding noise ([Qi et al. 2025](https://arxiv.org/pdf/2510.26788)),
-it interacts poorly with exponentiation-heavy approximations ([Schulman 2020](http://joschu.net/blog/kl-approx.html)), which are commonly used in alignment
-and reinforcement learning. For large-scale training, **no single precision format is universally safe**. Stability emerges from how precision, approximation, and objectives interact. The details below show how these issues arise empirically:
-
-<details>
-<strong>numerical details: PPO ratios and clipping</strong>
-
-In PPO-style objectives, policy updates depend on the ratio between the current and
-reference policies,
-
-<div class="lang-en" markdown="0">
-$$
-\begin{aligned}
-r
-&= \frac{\pi_\theta(a \mid s)}{\pi_{\theta_{\text{old}}}(a \mid s)}
-= \exp\!\left(
-    \log \pi_\theta(a \mid s)
-    - \log \pi_{\theta_{\text{old}}}(a \mid s)
-\right)
-\end{aligned}
-$$
-</div>
-
-which reintroduces exponentiation over log-probability differences. PPO stabilizes
-updates using ratio clipping,
-
-<div class="lang-en" markdown="0">
-$$
-\begin{aligned}
-\mathcal{L}_{\text{PPO}}
-&= - \min\!\Big(
-    r \, A,\;
-    \mathrm{clip}(r,\, 1-\epsilon,\, 1+\epsilon)\, A
-\Big)
-\end{aligned}
-$$
-</div>
-
-but clipping introduces gradient discontinuities and bias when log-probability
-differences are large. Empirically, PPO stability depends less on the clipping
-heuristic itself and more on controlling the scale at which log-probabilities enter
-the exponential regime.
-
-<strong>numerical details: KL approximations and precision</strong>
-
-Exponentiation-heavy KL approximations further amplify numerical sensitivity. A common
-example is the K3 approximation,
-
-<div class="lang-en" markdown="0">
-$$
-\begin{aligned}
-KL \approx r - 1 - \log r,
-\qquad r = \exp(\log r)
-\end{aligned}
-$$
-</div>
-
-where the exponential magnifies differences between target and reference policies.
-Under FP16, large ratios can underflow to zero or overflow to infinity, and higher-order
-approximations further magnify the error. As a result, combinations such as **FP16 with
-K3-style KL estimation** will become a source of numerical instability.
-
-</details>
-
-Numerical stability is therefore system-level property, not an isolated
-numerical detail. 
+it interacts poorly with exponentiation-heavy approximations ([Schulman 2020](http://joschu.net/blog/kl-approx.html)) (e.g., FP16 with
+K3-style KL estimation), which are commonly used in alignment
+and reinforcement learning. For large-scale training, **no single precision format is universally safe**. Stability emerges from how precision, approximation, and objectives interact. 
 
 ## From Systems to Products
 
