@@ -76,9 +76,7 @@ Once these abstractions are in place,  parallelism strategies (such as DDP, FSDP
 
 ### Training Architecture
 
-While computation infrastructure defines the shape of a system, training architecture determines how that shape evolves. Seemingly local architectural choices often have systemic consequences, governing parameter movement, stability, and their interaction with infrastructure constraints.
-
-Over time, a few design patterns repeatedly become standard choices.
+While computation infrastructure defines the shape of a system, training architecture determines how that shape evolves. Seemingly local architectural choices often have systemic consequences, governing parameter movement, stability, and their interaction with infrastructure constraints. Over time, a few design patterns repeatedly become standard choices.
 
 ***Low-Rank Adaptation (LoRA)***: Tuning a base model is often costly and difficult to scale when serving many clients. LoRA introduces trainable low-rank adapters alongside frozen base parameters ([Hu et al. 2021](https://arxiv.org/abs/2106.09685)). Rather than a shortcut to full fine-tuning, LoRA functions as an *auxiliary structure* attached to the model. Viewed this way, LoRA restricts learning to a small set of adapter parameters, keeping changes localized and the base model stable (e.g., [LoRA as programs](https://kevinlu.ai/loras-as-programs)).
 This framing becomes increasingly important as models are reused, composed, and
@@ -89,7 +87,7 @@ adapted across tasks and products.
 infeasible under conventional memory layouts.
 
 
-***Mixture of Experts (MoE)***: 
+***Mixture of Experts***: 
 As Transformer models scale, most computation becomes dominated by feed-forward networks (FFNs), which motivated Mixture-of-Experts (MoE) as a way to scale capacity without paying the full dense compute cost. MoE architectures ([Du et al. 2021](https://arxiv.org/abs/2112.06905), [Zoph et al. 2022](https://arxiv.org/abs/2202.08906)) are attractive primarily for scaling: by activating only a subset of experts per token, they allow model capacity to grow while keeping per-token compute roughly constant. At system level, however, MoE is less a local modeling trick than a system-level choice, routing, load balancing, and expert utilization tightly couple data, optimization, and infrastructure behavior. Imbalances formed during training often surface later as unstable rollouts, poor utilization, or degraded reinforcement learning performance, making MoE success depend on careful co-design across data, model, and infrastructure rather than architecture alone.
 
 
