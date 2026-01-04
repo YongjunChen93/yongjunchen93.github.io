@@ -19,8 +19,7 @@ AI progress is often framed around models: larger architectures, better objectiv
 > ---- [Thinking Machines Lab](https://thinkingmachines.ai/)
 
 
-This post reflects on what it takes to move from models to products, considering **models, systems, and user-facing features as equally important components** of the same pipeline. Rather than trying to analyze algorithms in isolation, it uses a few examples to reason about how assumptions, constraints, and failure modes show up in real systems, and how they feed into production AI features. As understanding this end-to-end transition, from models, to systems, to features matters just as much as improving model quality itself.
-
+This post reflects on what it takes to move from models to products, viewing **models, systems, and user-facing features as equally important components** of the same pipeline. Using a small set of examples to illustrate how assumptions, constraints, and failure modes surface at different points in this pipeline, and how system-level constraints shape real features.
 
 ## Model Primitives
 Data mixtures, computation infrastructure, and training algorithms form the core foundations of strong AI models.
@@ -230,6 +229,6 @@ Even when AI products increasingly serve other entities, the core challenge rema
 <footer class="mt-16 pt-6 border-t border-gray-200 dark:border-gray-700
                text-sm text-black dark:text-black">
   <p>
-    Notes: Post is actively revised. AI helps with English editing. Credits go to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
+    Notes: AI helps with English editing. Credits go to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
   </p>
 </footer>
