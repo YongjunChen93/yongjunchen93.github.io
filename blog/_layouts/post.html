@@ -24,6 +24,30 @@ layout: default
   </button>
 </div>
 
+{% assign author_name = page.author | default: site.author.name %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "{{ page.seo_title | default: page.title_en | default: page.title | escape }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ author_name | escape }}"
+  },
+  "datePublished": "{{ page.date | date: '%Y-%m-%d' }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ site.title | escape }}"
+  }
+  {% if page.pdf_url %},
+  "encoding": {
+    "@type": "MediaObject",
+    "contentUrl": "{% if page.pdf_url contains 'http' %}{{ page.pdf_url | escape }}{% else %}{{ page.pdf_url | absolute_url }}{% endif %}"
+  }
+  {% endif %}
+}
+</script>
+
 <article class="mt-20 mb-12">
   <header class="mb-4">
     <!-- 双语标题 -->
@@ -46,7 +70,18 @@ layout: default
   </header>
 
   <p class="text-gray-500 text-sm mb-8">
-    {{ page.date | date: "%B %d, %Y" }}
+    <span>Date: {{ page.date | date: "%B %d, %Y" }}</span>
+    <span>|</span>
+
+    {% assign author_name = page.author | default: site.author.name %}
+    {% if author_name %}
+    <span>Author: {{ author_name }}</span>
+    {% endif %}
+
+    {% if page.pdf_url %}
+      <span>|</span>
+      <a class="hover:underline" href="{{ page.pdf_url | relative_url }}">PDF</a>
+    {% endif %}
   </p>
 
   {{ content }}

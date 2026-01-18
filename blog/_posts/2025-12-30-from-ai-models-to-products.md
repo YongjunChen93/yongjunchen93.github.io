@@ -1,8 +1,10 @@
 ---
 layout: post
 title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems"
+seo_title: "From Model Primitives to Production Features: Notes on Understanding AI Systems"
 subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from a practitioner’s perspective"
-date: 2026-1-1
+author: "Yongjun Chen"
+date: 2026-01-01
 categories: [Tech]
 ---
 
@@ -218,12 +220,8 @@ AI features are also shaped by **human-facing constraints** for high quality. UI
 Even when AI products increasingly serve other entities, the core challenge remains: models optimize objectives, but products depend on stable interfaces and adaptive behavior shaped by subtle, implicit feedback. Whether the user is a person or another system, successful AI features treat models, systems, and user-facing design as equally important components of the same pipeline.
 
 
-</div>
-
-
 <footer class="mt-16 pt-6 border-t border-gray-200 dark:border-gray-700
-               text-sm text-black dark:text-black">
+               ttext-sm text-gray-500 dark:text-gray-400">
   <p>
     Notes: AI helps with English editing. Credits go to the broader tech community for the learning and inspiration behind these notes. They are written for memorization and reflection, not for tracking SOTA. Corrections and citation suggestions are very welcome.
-  </p>
 </footer>
