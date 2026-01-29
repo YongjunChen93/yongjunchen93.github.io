@@ -6,6 +6,8 @@ subtitle_en: "How modeling assumptions, system constraints, and feedback loops s
 author: "Yongjun Chen"
 date: 2026-01-01
 categories: [Tech]
+redirect_from:
+  - /tech/2026/01/01/from-ai-models-to-products.html
 ---
 
 
