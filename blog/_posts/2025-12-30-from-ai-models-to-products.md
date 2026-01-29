@@ -1,8 +1,8 @@
 ---
 layout: post
-title_en: "From Model Primitives to Production Features: Notes on Understanding AI Systems"
-seo_title: "From Model Primitives to Production Features: Notes on Understanding AI Systems"
-subtitle_en: "How modeling assumptions, system constraints, and user feedback shape real AI features from a practitioner’s perspective"
+title_en: "From Model Primitives to AI Systems: Notes on Design and Practice"
+seo_title: "From Model Primitives to AI Systems: Notes on Design and Practice"
+subtitle_en: "How modeling assumptions, system constraints, and feedback loops shape effective AI solutions from a practitioner’s perspective"
 author: "Yongjun Chen"
 date: 2026-01-01
 categories: [Tech]

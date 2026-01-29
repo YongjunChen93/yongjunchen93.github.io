@@ -7,6 +7,33 @@
     <link rel="stylesheet" href="jemdoc.css" type="text/css" />
 
     <style>
+      .intro{
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+        margin: 12px 0 18px 0;
+      }
+
+      .type-cursor{
+        display: inline-block;
+        height: 1em;
+        margin-left: 3px;
+        vertical-align: -0.1em;
+
+        border-left: 3px solid currentColor;  /* ✅ 关键 */
+        opacity: 0.8;
+
+        animation: blink 0.9s steps(1) infinite;
+      }
+
+      @keyframes blink{
+        50% { opacity: 0; }
+      }
+
+      /* 打完后让光标慢一点（可选） */
+      .type-done .type-cursor{
+        animation-duration: 2.5s;
+      }
       body {
           font-family: 'Helvetica', sans-serif;
           margin-right: 10%;
@@ -241,7 +268,9 @@
   <body>
     <!-- <h1>Yongjun Chen</h1> -->
     <section class="intro">
-      Building AI coding intelligence at <a href="https://www.augmentcode.com/"><strong>Augment Code</strong></a>.
+      <span id="type-prefix"></span>
+      <a id="type-link" href="https://www.augmentcode.com/" style="display:none;"><strong>Augment Code</strong></a><span id="type-suffix"></span>
+      <span class="type-cursor" aria-hidden="true"></span>
     </section>
 
     <h2><a id="blogs-link" href="blog/">Blogs & Notes</a></h2>
@@ -467,4 +496,59 @@
         <li><p>2020 and before: KDD, CIKM, NeurIPS, ICDM, TKDE</p></li>
         </ul> -->
   </body>
+
+  <script>
+  (function () {
+    const prefixEl = document.getElementById("type-prefix");
+    const linkEl   = document.getElementById("type-link");
+    const suffixEl = document.getElementById("type-suffix");
+    if (!prefixEl || !linkEl || !suffixEl) return;
+
+    const PREFIX = "Building AI coding intelligence at ";
+    const LINK_TEXT = "Augment Code";
+    const SUFFIX = ".";
+
+    const speed = 22;     // 每个字符间隔 ms，越小越快
+    const jitter = 18;    // 抖动，让它更像人敲（可选）
+
+    let i = 0;
+
+    function stepPrefix() {
+      if (i <= PREFIX.length) {
+        prefixEl.textContent = PREFIX.slice(0, i++);
+        setTimeout(stepPrefix, speed + Math.random() * jitter);
+      } else {
+        // 开始“打出”链接：先显示链接，再逐字补全其文本
+        linkEl.style.display = "inline";
+        linkEl.textContent = "";
+        i = 0;
+        stepLink();
+      }
+    }
+
+    function stepLink() {
+      if (i <= LINK_TEXT.length) {
+        linkEl.textContent = LINK_TEXT.slice(0, i++);
+        setTimeout(stepLink, speed + Math.random() * jitter);
+      } else {
+        // 最后补句号
+        suffixEl.textContent = SUFFIX;
+        document.body.classList.add("type-done");
+      }
+    }
+
+    // 可选：尊重“减少动效”
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      prefixEl.textContent = PREFIX;
+      linkEl.style.display = "inline";
+      linkEl.textContent = LINK_TEXT;
+      suffixEl.textContent = SUFFIX;
+      document.body.classList.add("type-done");
+      return;
+    }
+
+    stepPrefix();
+  })();
+  </script>
 </html>
