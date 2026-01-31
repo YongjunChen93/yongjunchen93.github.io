@@ -101,9 +101,12 @@ function countNeighbors(r, c) {
   for (let dr = -1; dr <= 1; dr++) {
     for (let dc = -1; dc <= 1; dc++) {
       if (dr === 0 && dc === 0) continue;
-      const nr = (r + dr + ROWS) % ROWS;
-      const nc = (c + dc + COLS) % COLS;
-      count += grid[nr][nc];
+      const nr = r + dr;
+      const nc = c + dc;
+      // Fixed boundary - cells outside are dead
+      if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+        count += grid[nr][nc];
+      }
     }
   }
   return count;

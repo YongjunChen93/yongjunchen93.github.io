@@ -421,9 +421,12 @@
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
             if (dr === 0 && dc === 0) continue;
-            const nr = (r + dr + ROWS) % ROWS;
-            const nc = (c + dc + COLS) % COLS;
-            count += grid[nr][nc];
+            const nr = r + dr;
+            const nc = c + dc;
+            // Fixed boundary - cells outside are dead
+            if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
+              count += grid[nr][nc];
+            }
           }
         }
         return count;
@@ -564,9 +567,9 @@
   <section class="about-me not-prose text-sm md:text-base text-gray-600 leading-relaxed">
     <h2>About Me</h2>
       <table class="imgtable about-muted"><tr><td>
-        <img style="" src="images/selfie2.jpeg" alt="photography" width="360px" height="360px"/>&nbsp;</td>
+        <img style="margin-top: 20px;" src="images/selfie2.jpeg" alt="photography" width="240px" height="240px"/>&nbsp;</td>
         <td align="left">
-          <p><font> I’m currently researching and building AI coding intelligence at <a href="https://augmentcode.com/"><strong>Augment Code</strong></a>.</p>
+          <p><font> This is Yongjun Chen, currently researching and building AI coding intelligence at <a href="https://augmentcode.com/"><strong>Augment Code</strong></a>.</p>
           
           <p>I was a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a> (2022-2025), where I worked on <a href="https://www.apple.com/apple-intelligence/"><strong>Apple Intelligence</strong></a> initiatives end-to-end.
           Efforts spanning benchmark training infra in early days, production data synthesis and mixture design, post-training and model distillation experimentation for both large and small models, and building ReAct style long-horizon reinforcement learning for aligning agentic models.
@@ -581,17 +584,19 @@
         </td></tr>
       </table>
     </section>
-    <font><strong>Contact:</strong></font> <a style="color:black;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
-    <script>
-      const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
-      const blogLink = isLocal
-        ? "http://127.0.0.1:4000/blog/"
-        : "blog/";
-      document.write(`<a href="${blogLink}">[Blog]</a>`);
-    </script>
-    <a href="https://www.linkedin.com/in/YongjunChen/">[Linkedin]</a>
-    <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en">[Google Scholar]</a>
-    <a href="https://github.com/YongjunChen93">[Github]</a>
+    <div class="contact-section" style="font-size: 13px; color: #6b7280; margin-top: 10px; margin-left: 1.0em;">
+      <font><strong>Contact:</strong></font> <a style="color:#374151;" href="mailto:yongjunchen1995@gmail.com">yongjunchen1995@gmail.com</a>
+      <script>
+        const isLocal = location.protocol === "file:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+        const blogLink = isLocal
+          ? "http://127.0.0.1:4000/blog/"
+          : "blog/";
+        document.write(`<a href="${blogLink}" style="color:#374151;">[Blog]</a>`);
+      </script>
+      <a href="https://www.linkedin.com/in/YongjunChen/" style="color:#374151;">[Linkedin]</a>
+      <a href="https://scholar.google.com/citations?user=XixFvLIAAAAJ&hl=en" style="color:#374151;">[Google Scholar]</a>
+      <a href="https://github.com/YongjunChen93" style="color:#374151;">[Github]</a>
+    </div>
     <!-- <h3>DM/ML/AI Conference Reviewer</h3>
         <ul>
         <li><p>2025: COLING; 2024: TKDE, ACL, EMNLP; 2023: ACL; 2022: UAI, EMNLP, AAAI, ACML, TOIS; 2021: NAACL</p></li>

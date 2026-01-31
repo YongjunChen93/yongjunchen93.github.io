@@ -441,7 +441,7 @@ img {
 /* ===== About Me: muted style (only this section) ===== */
 .about-muted {
   color: #6b7280;          /* 灰色正文 */
-  font-size: 14.5px;       /* 比默认略小 */
+  font-size: 13px;         /* 更小的字体 */
   line-height: 1.7;        /* 更舒服 */
 }
 
@@ -458,6 +458,41 @@ img {
 
 .about-muted a:hover {
   text-decoration: underline;
+}
+
+/* About Me section title - gray color */
+.about-me h2 {
+  color: #6b7280 !important;
+}
+
+/* Mobile responsive for About Me section */
+@media (max-width: 768px) {
+  .about-muted {
+    font-size: 12px;
+  }
+
+  /* Stack image and text vertically on mobile */
+  table.imgtable tr {
+    display: block;
+  }
+
+  table.imgtable td {
+    display: block;
+    width: 100% !important;
+  }
+
+  table.imgtable img {
+    margin: 0 auto 20px auto !important;
+    display: block;
+    max-width: 200px !important;
+    height: auto !important;
+  }
+
+  /* Contact section - remove left margin on mobile */
+  .contact-section {
+    margin-left: 0 !important;
+    font-size: 12px !important;
+  }
 }
 
 /* ===== Top intro spacing ===== */
