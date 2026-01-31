@@ -19,7 +19,8 @@ window.__BLOG_POSTS__ = [
     url: {{ post.url | jsonify }},
     date: {{ post.date | date: "%Y-%m-%d" | jsonify }},
     categories: {{ post.categories | jsonify }},
-    excerpt: {{ inside | strip_html | strip_newlines | truncate: 220 | jsonify }}
+    excerpt: {{ inside | strip_html | strip_newlines | truncate: 220 | jsonify }},
+    preview_type: {{ post.preview_type | jsonify }}
   }{% unless forloop.last %},{% endunless %}
 
 {% endfor %}

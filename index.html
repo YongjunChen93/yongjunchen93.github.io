@@ -336,12 +336,28 @@
 
         const limit = 9;
 
-        container.innerHTML = posts.slice(0, limit).map((p) => {
+        container.innerHTML = posts.slice(0, limit).map((p, idx) => {
           const href = BLOG_BASE + (p.url || "");
           const title = p.title || "Untitled";
           const date = p.date || "";
           const category = pickCategory(p);
           const excerpt = pickExcerpt(p);
+
+          // Check if this post should show canvas animation
+          if (p.preview_type === 'canvas_animation') {
+            return `
+              <li>
+                <article class="blog-card">
+                  <h3 class="blog-title"><a href="${href}">${title}</a></h3>
+                  <div class="blog-meta">
+                    <span class="blog-category">${category}</span>
+                    <span class="blog-date">${date}</span>
+                  </div>
+                  <canvas id="preview-canvas-${idx}" width="280" height="180" style="display: block; margin: 10px auto; background: #fff;"></canvas>
+                </article>
+              </li>
+            `;
+          }
 
           return `
             <li>
@@ -356,6 +372,13 @@
             </li>
           `;
         }).join("");
+
+        // Initialize canvas animations after rendering
+        posts.slice(0, limit).forEach((p, idx) => {
+          if (p.preview_type === 'canvas_animation') {
+            initGameOfLifePreview(idx);
+          }
+        });
       };
 
       s.onerror = () => {
@@ -364,6 +387,85 @@
 
       document.head.appendChild(s);
     })();
+
+    // Game of Life preview animation
+    function initGameOfLifePreview(idx) {
+      const canvas = document.getElementById(`preview-canvas-${idx}`);
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      const CELL_SIZE = 4;
+      const COLS = Math.floor(canvas.width / CELL_SIZE);
+      const ROWS = Math.floor(canvas.height / CELL_SIZE);
+
+      let grid = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+
+      // Gosper Gun pattern
+      const pattern = [
+        [5,1],[5,2],[6,1],[6,2],[5,11],[6,11],[7,11],[4,12],[3,13],[3,14],[8,12],[9,13],[9,14],
+        [6,15],[4,16],[5,17],[6,17],[7,17],[6,18],[8,16],[3,21],[4,21],[5,21],[3,22],[4,22],
+        [5,22],[2,23],[6,23],[1,25],[2,25],[6,25],[7,25],[3,35],[4,35],[3,36],[4,36]
+      ];
+
+      // Place pattern
+      const offsetX = 5;
+      const offsetY = 5;
+      pattern.forEach(([r, c]) => {
+        if (r + offsetY < ROWS && c + offsetX < COLS) {
+          grid[r + offsetY][c + offsetX] = 1;
+        }
+      });
+
+      function countNeighbors(r, c) {
+        let count = 0;
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = (r + dr + ROWS) % ROWS;
+            const nc = (c + dc + COLS) % COLS;
+            count += grid[nr][nc];
+          }
+        }
+        return count;
+      }
+
+      function update() {
+        const newGrid = Array(ROWS).fill(null).map(() => Array(COLS).fill(0));
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const neighbors = countNeighbors(r, c);
+            if (grid[r][c] === 1) {
+              newGrid[r][c] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
+            } else {
+              newGrid[r][c] = (neighbors === 3) ? 1 : 0;
+            }
+          }
+        }
+        grid = newGrid;
+      }
+
+      function draw() {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#000';
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (grid[r][c] === 1) {
+              ctx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+            }
+          }
+        }
+      }
+
+      function animate() {
+        update();
+        draw();
+        setTimeout(animate, 100);
+      }
+
+      draw();
+      animate();
+    }
     </script>
 
     <h2>Selected Papers</h2>
@@ -464,8 +566,8 @@
       <table class="imgtable about-muted"><tr><td>
         <img style="" src="images/selfie2.jpeg" alt="photography" width="360px" height="360px"/>&nbsp;</td>
         <td align="left">
-          <p><font> I’m currently researching and building <strong>production-grade</strong> AI coding intelligence systems at <a href="https://docs.augmentcode.com/"><strong>Augment Code</strong></a>.</p>
-
+          <p><font> I’m currently researching and building AI coding intelligence at <a href="https://augmentcode.com/"><strong>Augment Code</strong></a>.</p>
+          
           <p>I was a senior research engineer at <a href="https://www.apple.com/"><strong>Apple</strong></a> (2022-2025), where I worked on <a href="https://www.apple.com/apple-intelligence/"><strong>Apple Intelligence</strong></a> initiatives end-to-end.
           Efforts spanning benchmark training infra in early days, production data synthesis and mixture design, post-training and model distillation experimentation for both large and small models, and building ReAct style long-horizon reinforcement learning for aligning agentic models.
           Influenced AI feature launches including <a href="https://support.apple.com/guide/iphone/find-the-right-words-with-writing-tools-iph6f08da1d2/ios"><strong>Writing Tools</strong></a> and <a href="https://support.apple.com/guide/iphone/use-apple-intelligence-in-messages-iph64709c5c3/ios"><strong>Reply Suggestions</strong></a>. Before Apple, I was a senior research engineer at <a href="https://www.salesforceairesearch.com/"><strong>Salesforce AI Research</strong></a> 

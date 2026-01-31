@@ -22,10 +22,10 @@ title: "Link"
 description: "Exploring the world of Hyrule and sharing to sharpen thought"
 baseurl: "/blog"  # 根目录即可
 url: ""       # GitHub Pages 会自动处理
-author:
-  name: "Yongjun Chen"
+# author:
+  # name: "Yongjun Chen"
   # 可选：学术主页/个人主页
-  url: "https://yongjunchen93.github.io"
+  # url: "https://yongjunchen93.github.io"
 # Build settings
 theme: minima
 markdown: kramdown
