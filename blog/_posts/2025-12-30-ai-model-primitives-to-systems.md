@@ -46,15 +46,15 @@ The goal is not to eliminate randomness, but to make it reproducible. This means
 > is that general methods that leverage computation are ultimately the most effective, 
 > and by a large margin.  ---- [Richard Sutton](https://www.cs.utexas.edu/~eunsol/courses/data/bitter_lesson.pdf)
 
-As many pioneers have emphasized, computation is not just a resource but also a design constraint.
+As many pioneers have emphasized, computation is not just a resource but also a design constraint. 
 
 Choices around hardware, parallelism strategies, and system architecture determine
-what is possible downstream. Once these foundations are set, changing them becomes
-expensive, and sometimes infeasible.
+what is possible downstream. Once set, changing them becomes expensive or infeasible. Parallelism decisions determine:
+whether training runs can be debugged and reasoned about; how compute scales across 
+training and inference; whether rollouts, evaluation pipelines, and reinforcement 
+learning loops remain tractable.
 
-Crucially, parallelism decisions are not merely about efficiency. They determine whether training runs can be debugged and reasoned about; How compute scales across training and inference; Whether rollouts and evaluation pipelines can scale with the model; Whether reinforcement learning loops remain tractable at all.
-
-Once systems scale, computation infrastructure defines the *shape* of the system long
+At scale, computation infrastructure defines the *shape* of the system long
 before it defines its speed.
 
 ***Parallelism Starts from Communication***
@@ -97,9 +97,7 @@ As Transformer models scale, most computation becomes dominated by feed-forward 
 
 ## From Models to Systems
 
-We don’t call a model failed because it performs poorly offline; we call it failed when it is deployed. After deployment, failures often appear around inference constraints, agentic
-interactions, learning dynamics, and numerical stability. These are not exhaustive,
-but they provide concrete lenses for understanding how models become systems.
+Concrete lenses for examining how models fail as systems include inference constraints, agentic interactions, learning dynamics, and numerical stability.
 
 ### Inference Optimization
 
@@ -108,24 +106,14 @@ In autoregressive generation, attention is often the first place where inference
 
 Beyond memory, decoding itself becomes a systems problem. **Speculative decoding** ([Chen et al. 2023](https://arxiv.org/abs/2302.01318), [Leviathan et al. 2023](https://arxiv.org/pdf/2211.17192)) reduces end-to-end latency by letting cheap draft models propose multiple tokens that
 expensive target models verify in parallel, without changing output distributions. Systems such as [DeepSeek V3](https://arxiv.org/abs/2412.19437) use multi-token prediction to produce stronger drafts for speculative decoding, while newer variants move toward **speculative
-editing** (e.g., [EfficientEdit](https://arxiv.org/pdf/2506.02780)), where only edited spans are regenerated and unchanged context is reused. At the extreme, even an **n-gram** model can serve as the draft, reducing the problem to validating local edits rather than regenerating the full sequence. 
+editing** (e.g., [EfficientEdit](https://arxiv.org/pdf/2506.02780)), where only edited spans are regenerated and unchanged context is reused. At the extreme, even an **n-gram** model can serve as the draft, reducing the cost of validating local edits rather than regenerating the full sequence. 
 
 ### Agentic Systems
 
 While inference focuses on generating a response for a single request, agentic models
-extend model behavior across steps and interactions. With the emergence of [Chain-of-Thought](https://arxiv.org/abs/2201.11903), language models began to exhibit explicit reasoning behavior rather than acting as purely passive sequence predictors. The [ReAct](https://arxiv.org/abs/2210.03629) (Reasoning and Acting) was one of the early works to formalize this shift by interleaving reasoning traces with action decisions, allowing models to reason and act in a loop instead of producing a single text continuation.
+extend model behavior across steps and interactions. With the emergence of [Scratchpad](https://arxiv.org/abs/2112.00114) and [Chain-of-Thought](https://arxiv.org/abs/2201.11903), language models began to exhibit explicit reasoning behavior rather than acting as purely passive sequence predictors. The [ReAct](https://arxiv.org/abs/2210.03629) (Reasoning and Acting) was one of the early works to formalize this shift by interleaving reasoning traces with action decisions, allowing models to reason and act in a loop instead of producing a single text continuation.
 
-This marked a paradigm shift in how models are used. Rather than simply responding
-to prompts, models began deciding what to do next, invoking tools, calling APIs, and
-interacting with environments as part of their output. In agentic settings, a model
-becomes an autonomous component that reasons, plans, and acts across multiple steps,
-often over long horizons, with memory and feedback loops.
-
-Compared to traditional inference, agentic models introduce a tight reasoning, planning, and action loop, persistent state across interactions, and deep integration with external tools
-such as search, calculators, and execution engines. These properties make them suitable
-for real-world workflows involving planning, automation, and multi-step decision
-making, but they also introduce new challenges in reliability, controllability, and
-long-horizon behavior.
+This marked a paradigm shift in how models are used. Rather than simply responding to prompts, models began deciding what to do next, invoking tools, calling APIs, and interacting with environments. In agentic settings, a model becomes an autonomous component that reasons, plans, and acts across multiple steps with persistent state and feedback loops. This introduces tight integration with external tools, memory across interactions, and long-horizon decision making, which enable real-world automation but also introduce challenges in reliability, controllability, and behavioral stability.
 
 
 ### Reinforcement Learning for Agents
@@ -198,7 +186,7 @@ and reinforcement learning. For large-scale training, **no single precision form
 
 In reality, not everyone, or every product can afford a frontier-scale model. Cost, latency, reliability, and privacy constraints often make large models impractical to serve directly. Distillation offers a practical way forward: keep the behavior we care about, while running a much smaller, cheaper, and more predictable model in production.
 
-At its core, knowledge distillation aligns the student’s output distribution with that of the teacher, most commonly through a KL-divergence objective. Note that the *direction* of KL matters in generative models ([Eric's post](https://blog.evjang.com/2016/08/variational-bayes.html), [Gu et al. 2025](https://thinkingmachines.ai/blog/on-policy-distillation/)). Minimizing $KL(p\|\|q)$ (**forward KL**) encourages **mode-covering** behavior, pushing student to match all modes of the teacher distribution. In contrast, minimizing $KL(q\|\|p)$ (**reverse KL**) is mode-seeking, concentrating probability mass on the teacher’s most likely outputs. In deployment settings, the reverse KL often produces sharper and more decisive student behavior, which is desirable when distillation targets a production model rather than a generative oracle. 
+Knowledge distillation aligns the student’s output distribution with that of the teacher, most commonly through a KL-divergence objective. Note that the *direction* of KL matters in generative models ([Eric's post](https://blog.evjang.com/2016/08/variational-bayes.html), [Gu et al. 2025](https://thinkingmachines.ai/blog/on-policy-distillation/)). Minimizing $KL(p\|\|q)$ (**forward KL**) encourages **mode-covering** behavior, pushing student to match all modes of the teacher distribution. In contrast, minimizing $KL(q\|\|p)$ (**reverse KL**) is mode-seeking, concentrating probability mass on the teacher’s most likely outputs. In deployment settings, the reverse KL often produces sharper and more decisive student behavior, which is desirable when distillation targets a production model rather than a generative oracle. 
 
 Most traditional distillation pipelines are off-policy, relying on static datasets or trajectories generated by earlier teacher checkpoints. As the student evolves, this can introduce distribution mismatch and gradual forgetting. **On-Policy Distillation** ([Gu et al. 2025](https://thinkingmachines.ai/blog/on-policy-distillation/)) trains the student on its own rollouts, with supervision provided by the teacher, keeping the learning distribution aligned and avoiding stale supervision.
 
@@ -206,18 +194,36 @@ Distillation remains one of the most practical ways to turn frontier models into
 
 ### Building AI Features
 
-AI products do not fail because models are weak; they fail because the gap between models and users is underestimated. Closing this gap typically requires substantial **post-training** effort to align what models optimize with how people actually experience and judge a product.
+When training models, we optimize **deterministic signals** such as loss, reward, 
+and accuracy. When building features, we confront **non-deterministic user experience**, 
+observed only through imperfect proxies like usefulness, trust, and friction. 
+In training, failure is reversible; in production, a single visible failure can 
+permanently erode trust. Managing this asymmetry is one of the core challenges 
+of building AI features and require substantial **post-training** effort to align 
+what models optimize with how people actually experience and judge a product.
 
-When training models, we optimize **deterministic signals** such as loss, reward, and accuracy.
-When building features, we confront **non-deterministic user experience**, observed only through imperfect proxies like usefulness, trust, and friction.
-In training, failure is reversible; in production, a single visible failure can permanently erode trust.
-Managing this asymmetry is one of the core challenge of building AI features.
+Beyond the model itself, effective features rely on good **context engineering and 
+tool management**. Models do not inherently know what matters; context must be 
+selected, structured, and constrained. Tool use adds risk: deciding *when* to act, 
+*which* tools to access, and *how* to handle failures often determines visible 
+reliability. Most failures arise from poorly scoped context or brittle orchestration, 
+not model quality.
 
-Beyond the model itself, effective features rely on **context engineering and tool management**. Models do not inherently know what matters to a specific user, task, or moment; context must be selected, structured, and constrained. Tool use introduces another layer of risk: deciding *when* the model should act, *which* tools it can access, and *how* failures are handled often dominates user's visible reliability. Most product failures arise not from model quality, but from poorly scoped context or brittle tool orchestration.
 
-AI features are also shaped by **human-facing constraints** for high quality. UI design determines how uncertainty and errors are perceived, while system constraints such as latency, token limits, input/output modality bound what interactions are feasible. For products meant to benefit broad audiences, additional constraints emerge: language coverage, cultural norms, accessibility, and regional expectations. Users do not interact with loss functions; they interact with behavior. As a result, feature design prioritizes predictability, graceful degradation, and avoiding surprising failures over marginal gains in average model quality.
+AI features are also shaped by **human-facing constraints**. UI design determines 
+how uncertainty and errors are perceived, while system constraints such as latency, 
+token limits, and input/output modalities bound what interactions are feasible. 
+For products meant to benefit broad audiences, additional constraints emerge: 
+language coverage, cultural norms, accessibility, and regional expectations. 
+Users interact with behavior, not loss functions. Feature design therefore 
+prioritizes predictability, graceful degradation, and avoiding surprising 
+failures over marginal gains in average model quality.
 
-**Evaluation and risk** therefore look fundamentally different at the feature level. Some metrics such as latency, cost, task success are quantifiable, but the most important signals are subjective: Is this helpful? Is it annoying? Does this feel like my style? Offline benchmarks rarely capture these dimensions. Unlike models, features are judged continuously in real use, and the trust, once lost, is difficult to recover.
+**Evaluation and risk** therefore look fundamentally different at the feature level. 
+Metrics like latency, cost, task success are quantifiable, but the most important 
+signals are subjective: Is this helpful? Is it annoying? Does this feel like my 
+style? Offline benchmarks rarely capture these dimensions. Unlike models, features 
+are judged continuously in real use, and trust, once lost, is difficult to recover.
 
 Even when AI products increasingly serve other entities, the core challenge remains: models optimize objectives, but products depend on stable interfaces and adaptive behavior shaped by subtle, implicit feedback. Whether the user is a person or another system, successful AI features treat models, systems, and user-facing design as equally important components of the same pipeline.
 
